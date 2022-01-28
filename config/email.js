@@ -14,3 +14,11 @@ const smtpTransport = nodemailer.createTransport({
   module.exports={
       smtpTransport
   }
+
+
+
+// import {ranNum} from "../src/app/User/userController"
+
+// var gogo = ranNum
+
+// export {gogo}

@@ -124,8 +124,7 @@ exports.editUser = async function (id, nickname) {
 
 exports.generateRandom = async function (min, max) {
 
-    var ranNum = Math.floor(Math.random()*(max-min+1)) + min;
+    let ranNum = Math.floor(Math.random()*(max-min+1)) + min;
     return ranNum;
 
-    
 }

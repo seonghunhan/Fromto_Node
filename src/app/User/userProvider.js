@@ -83,3 +83,19 @@ exports.accountCheck = async function (id) {
 
   return userAccountResult;
 };
+
+exports.authcodeUpdate = async function (code) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const updateCode = await userDao.updateAuthCode(connection, code);
+  connection.release();
+
+  return updateCode;
+}
+
+exports.authcodeCheck = async function () {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const selectCode = await userDao.selectAuthCode(connection);
+  connection.release();
+  const realcode = selectCode[0][0].code;
+  return realcode;
+}

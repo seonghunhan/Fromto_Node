@@ -20,6 +20,9 @@ module.exports = function(app){
     // 5. 이메일 인증 API
     app.post('/app/newusers/authemail', user.authemail);
 
+    // 6. 인증코드 체크 API
+    app.post('/app/newusers/authcodeCheck', user.checkCode);
+
     // // 6. 인증번호 비교 API
     // app.get('/app/newusers/:compareNum', user.compaereAuthcode);
 

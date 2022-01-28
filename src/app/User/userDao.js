@@ -97,6 +97,24 @@ async function updateUserInfo(connection, id, nickname) {
   return updateUserRow[0];
 }
 
+async function updateAuthCode(connection, code){
+  const updateCodeQuery =  `
+  UPDATE authCode 
+  SET code = ?
+  WHERE fixedIdx = 1;`;
+  const updateCodeRow = await connection.query(updateCodeQuery, code);
+  return updateCodeRow;
+}
+
+async function selectAuthCode(connection){
+  const selectCodeQuery = `
+  SELECT  code
+  FROM authCode 
+  WHERE fixedIdx = 1;`;
+  const selectCodeRow = await connection.query(selectCodeQuery);
+  return selectCodeRow;
+}
+
 
 module.exports = {
   selectUser,
@@ -107,4 +125,6 @@ module.exports = {
   selectUserPassword,
   selectUserAccount,
   updateUserInfo,
+  updateAuthCode,
+  selectAuthCode,
 };

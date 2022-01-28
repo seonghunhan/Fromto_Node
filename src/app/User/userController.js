@@ -25,7 +25,7 @@ const { smtpTransport } = require("../../../config/email")
 exports.postUsers = async function (req, res) {
 
     /**
-     * Body: email, password, nickname
+     * Body: id, password, nickname, birth, gender
      */
     const {id, password, nickname, birth, gender} = req.body;
 
@@ -153,16 +153,21 @@ exports.authemail = async function (req, res) {
 
     const {email} = req.body;
 
-    const ranNum = await userService.generateRandom(111111,999999)
+    var ranNum = await userService.generateRandom(111111,999999)
+
+    // var ranNum = Math.floor(Math.random()*(999999-111111+1)) + 111111;
 
     const mailOption = {
         from: '"FromTo" <fromto.dear.sincerely@gmail.com>',
         to: email ,
         subject: 'fromto',
-        text: '오른쪽 인증번호를 입력해 주세요' + ranNum
+        text: '오른쪽 인증번호를 입력해 주세요 : ' + ranNum
     };
 
-
+    // const authcodeResult = await userProvider.authcodeUpdate(ranNum)
+    
+    // checkCode(req, res, ranNum)
+    
     //메일 전송
     const result = await smtpTransport.sendMail(mailOption, function(error){
         if (error) {
@@ -174,6 +179,53 @@ exports.authemail = async function (req, res) {
     });
 
 }
+
+/**
+ * API No. 6
+ * API Name :  인증코드 체크 API
+ * [POST] /app/newusers/authemail
+ * body : authemail
+ */
+exports.checkCode = async function (req, res, ranNum) {
+
+        const {checkcode} = req.body;
+        
+        const realcode = await userProvider.authcodeCheck()
+
+        
+
+        //import {gogo} from "../../../config/email"
+
+        //console.log(gogo)
+
+
+        if (!checkcode){
+            return res.send(response(baseResponse.SIGNUP_AUTHCODE_EMPTY));
+        }else if (checkcode == realcode){
+            return res.send(response(baseResponse.SUCCESS));
+        }else if (checkcode != realcode){
+            return res.send(response(baseResponse.SIGNUP_AUTHCODE_WRONG));
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * API No. 4
