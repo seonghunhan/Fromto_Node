@@ -23,8 +23,8 @@ module.exports = function(app){
     // 6. 인증코드 체크 API
     app.post('/app/newusers/authcodeCheck', user.checkCode);
 
-    // // 6. 인증번호 비교 API
-    // app.get('/app/newusers/:compareNum', user.compaereAuthcode);
+    // 7. 비밀번호 바꾸기 인증번호 API
+    app.post('/app/users/changePassword', user.changePasswordAuthcode);
 
 
 

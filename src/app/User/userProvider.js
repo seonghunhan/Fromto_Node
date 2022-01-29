@@ -96,6 +96,13 @@ exports.authcodeCheck = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
   const selectCode = await userDao.selectAuthCode(connection);
   connection.release();
-  const realcode = selectCode[0][0].code;
+  const realcode = selectCode[0][0].emailcode;
   return realcode;
+}
+
+exports.usercheckForChangePassword = async function(birth, gender, id) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const UserInfo = await userDao.selectUserInfoforPassword(connection, birth, gender, id);
+  connection.release();
+  return UserInfo;
 }

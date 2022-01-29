@@ -100,7 +100,7 @@ async function updateUserInfo(connection, id, nickname) {
 async function updateAuthCode(connection, code){
   const updateCodeQuery =  `
   UPDATE authCode 
-  SET code = ?
+  SET emailcode = ?
   WHERE fixedIdx = 1;`;
   const updateCodeRow = await connection.query(updateCodeQuery, code);
   return updateCodeRow;
@@ -108,13 +108,25 @@ async function updateAuthCode(connection, code){
 
 async function selectAuthCode(connection){
   const selectCodeQuery = `
-  SELECT  code
+  SELECT  emailcode
   FROM authCode 
   WHERE fixedIdx = 1;`;
   const selectCodeRow = await connection.query(selectCodeQuery);
+
   return selectCodeRow;
 }
 
+async function selectUserInfoforPassword(connection, birth, gender, id) {
+  const list = [birth, gender, id];
+  const selectUserInfoQuery = `
+  SELECT id, nickname
+  FROM UserInfo
+  WHERE birth = ? AND gender = ? AND id = ?;
+  `;
+  const selectUserRow = await connection.query(selectUserInfoQuery, list);
+  //console.log(selectUserRow[0][0])
+  return selectUserRow[0][0]
+}
 
 module.exports = {
   selectUser,
@@ -127,4 +139,5 @@ module.exports = {
   updateUserInfo,
   updateAuthCode,
   selectAuthCode,
+  selectUserInfoforPassword,
 };

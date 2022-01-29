@@ -160,14 +160,14 @@ exports.authemail = async function (req, res) {
     const mailOption = {
         from: '"FromTo" <fromto.dear.sincerely@gmail.com>',
         to: email ,
-        subject: 'fromto',
+        subject: 'FromTo 인증번호',
         text: '오른쪽 인증번호를 입력해 주세요 : ' + ranNum
     };
 
-    // const authcodeResult = await userProvider.authcodeUpdate(ranNum)
+    const authcodeResult = await userProvider.authcodeUpdate(ranNum)
     
-    // checkCode(req, res, ranNum)
-    
+    //checkCode(req, res, ranNum)
+
     //메일 전송
     const result = await smtpTransport.sendMail(mailOption, function(error){
         if (error) {
@@ -184,9 +184,9 @@ exports.authemail = async function (req, res) {
  * API No. 6
  * API Name :  인증코드 체크 API
  * [POST] /app/newusers/authemail
- * body : authemail
+ * body : checkcode
  */
-exports.checkCode = async function (req, res, ranNum) {
+exports.checkCode = async function (req, res) {
 
         const {checkcode} = req.body;
         
@@ -197,6 +197,8 @@ exports.checkCode = async function (req, res, ranNum) {
         //import {gogo} from "../../../config/email"
 
         //console.log(gogo)
+
+        //console.log(realcode)
 
 
         if (!checkcode){
@@ -210,6 +212,45 @@ exports.checkCode = async function (req, res, ranNum) {
 
 
 
+/**
+ * API No. 7
+ * API Name :  비밀번호 바꾸기 인증번호 API
+ * [POST] /app/users/changePassword
+ * body : birth, gender, id
+ */
+exports.changePasswordAuthcode = async function (req, res) {
+
+        const {birth, gender, id} = req.body;
+        
+        const Userinfo = await userProvider.usercheckForChangePassword(birth, gender, id)
+
+        if(!Userinfo){
+            return res.send(response(baseResponse.SIGNIN_CHANGEPASSWORD_INFO_EMPTY))
+        }else if (Userinfo){
+            console.log("다음 고고고")
+            
+            var ranNum = await userService.generateRandom(111111,999999)
+        
+            const mailOption = {
+                from: '"FromTo" <fromto.dear.sincerely@gmail.com>',
+                to: Userinfo.id ,
+                subject: '비밀번호 변경',
+                text: '임시비밀번호 : ' + ranNum
+            };
+        
+            //메일 전송
+            const result = await smtpTransport.sendMail(mailOption, function(error){
+                if (error) {
+                    console.log('에러 발생!!!' + error);
+                }
+                else {
+                    return res.send(response(baseResponse.SUCCESS));
+                }
+            });
+        }
+
+        
+}
 
 
 
