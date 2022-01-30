@@ -400,3 +400,25 @@ exports.getUserByRegion = async function(req,res){
     
     return res.send(response(baseResponse.SUCCESS, User));
 };
+
+ /**
+ * API No. 11
+ * API Name : 특정지역에 사는 유저 조회
+ * [GET] /app/product
+ */
+
+// Query String: price
+
+exports.getUserByRegion = async function(req,res){
+    const region = req.query.region;
+    const User = await userProvider.retrieveUserByRegion(region);
+    console.log(region);
+
+    // if (Array.isArray(pdinfoByprice) && pdinfoByprice.length ===0){
+    //     return res.send(errResponse(baseResponse.PRODUCT_PRICE_EMPTY)); 
+    // }else{
+    //     return res.send(response(baseResponse.SUCCESS, pdinfoByprice));
+    // }
+    
+    return res.send(response(baseResponse.SUCCESS, User));
+};
