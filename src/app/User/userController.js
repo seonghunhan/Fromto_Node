@@ -321,6 +321,17 @@ exports.changePasswordAuthcode = async function (req, res) {
 };
 
 
+/** JWT 토큰 검증 API
+ *  * API No. 11
+ * [GET] /app/auto-login
+ */
+ exports.check = async function (req, res) {
+    const userIdResult = req.verifiedToken.userId;
+    console.log(userIdResult);
+    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
+};
+
+
 
 
 
