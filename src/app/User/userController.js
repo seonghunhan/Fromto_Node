@@ -57,7 +57,7 @@ exports.postUsers = async function (req, res) {
 /**
  * API No. 2
  * API Name : 아이디 중복 체크 API
- * [GET] /app/users/:id
+ * [GET] /app/users/idcheck/:id
  */
 exports.checkInfoById = async function (req, res) {
 
@@ -91,7 +91,7 @@ exports.checkInfoById = async function (req, res) {
 /**
  * API No. 3
  * API Name : 닉네임 중복 체크 API
- * [GET] /app/users/:nickname
+ * [GET] /app/users/nicknamecheck/:nickname
  */
  exports.checkInfoByNickname = async function (req, res) {
 
@@ -147,7 +147,7 @@ exports.checkInfoById = async function (req, res) {
  * API No. 5
  * API Name :  이메일 인증 API
  * [POST] /app/newusers/authemail
- * body : authemail
+ * body : email
  */
 exports.authemail = async function (req, res) {
 
@@ -183,7 +183,7 @@ exports.authemail = async function (req, res) {
 /**
  * API No. 6
  * API Name :  인증코드 체크 API
- * [POST] /app/newusers/authemail
+ * [POST] /app/newusers/authcodeCheck
  * body : checkcode, email
  */
 exports.checkCode = async function (req, res) {
@@ -198,15 +198,15 @@ exports.checkCode = async function (req, res) {
 
         //console.log(gogo)
 
-        //console.log(realcode)
+ 
 
 
         if (!checkcode){
             return res.send(response(baseResponse.SIGNUP_AUTHCODE_EMPTY));
-        }else if (checkcode == realcode){
-            return res.send(response(baseResponse.SUCCESS));
         }else if (checkcode != realcode){
             return res.send(response(baseResponse.SIGNUP_AUTHCODE_WRONG));
+        }else if (checkcode == realcode){
+            return res.send(response(baseResponse.SUCCESS));
         }
 }
 
@@ -240,7 +240,7 @@ exports.changePasswordAuthcode = async function (req, res) {
         const Userinfo = await userProvider.usercheckForChangePassword(birth, gender, id)
 
         if(!Userinfo){
-            return res.send(response(baseResponse.SIGNIN_CHANGEPASSWORD_INFO_EMPTY))
+            return res.send(response(baseResponse.SIGNIN_CHANGEPASSWORD_INFO_NOT_MATCHED))
         }else if (Userinfo){
             
             var ranNum = await userService.generateRandom(111111,999999)
@@ -268,75 +268,72 @@ exports.changePasswordAuthcode = async function (req, res) {
 
 /**
  * API No. 9
- * API Name :  비밀번호 인증번호 체크 API
+ * API Name :  비밀번호 바꾸기 API
  * [POST] /app/newusers/passwordAuthcodeCheck
  * body : checkcode, email
  */
- exports.checkCode = async function (req, res) {
+ exports.passwordcheckCode = async function (req, res) {
 
-    const {checkcode, email} = req.body;
+    const {birth, gender, checkcode, email, password1, password2} = req.body;
     
     const realcode = await userProvider.passwordAuthcodeCheck(email)
 
-    if (!checkcode){
-        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_EMPTY));
-    }else if (checkcode == realcode){
-        return res.send(response(baseResponse.SUCCESS));
+
+    if (!birth || !gender || !checkcode || !email || !password1 || !password2){
+        return res.send(response(baseResponse.SIGNIN_CHANGEPASSWORD_DATA_EMPTY));
     }else if (checkcode != realcode){
         return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_WRONG));
+    }else if (password1 != password2){
+        return res.send(response(baseResponse.SIGNIN_PASSWORD_NOT_MATCHED));
+    }else if (checkcode == realcode && birth && gender && password1 && password2){
+        await userService.editPassword(email, password2);
+        return res.send(response(baseResponse.SUCCESS));
     }
 }
 
 /**
- * API No. 9
- * API Name :  비밀번호 인증번호 체크 API
- * [POST] /app/newusers/passwordAuthcodeCheck
- * body : checkcode, email
+ * API No. 10
+ * API Name :  비밀번호 인증코드 삭제 API
+ * [POST] /app/newusers/deletePasswordAuthcode
+ * body : email
  */
- exports.checkCode = async function (req, res) {
+ exports.deletePasswordAuthcode = async function (req, res) {
 
-    const {checkcode, email} = req.body;
-    
-    const realcode = await userProvider.passwordAuthcodeCheck(email)
+    const {email} = req.body
 
-    if (!checkcode){
-        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_EMPTY));
-    }else if (checkcode == realcode){
+    const resultResponse = await userProvider.passwordcodeCheckForDelete(email)
+
+    if(resultResponse){
         return res.send(response(baseResponse.SUCCESS));
-    }else if (checkcode != realcode){
-        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_WRONG));
     }
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-/**
- * API No. 4
- * API Name : 특정 유저 계정 삭제 API
- * [DELETE] /app/deleteuser/{userNickName}
+/** JWT 토큰 검증 API
+ *  * API No. 11
+ * [GET] /app/auto-login
  */
-
-  exports.deleteUserByUserNickName = async function (req, res) {
-
-      // Path Varirable: userNickName
-      const userNickName = req.params.userNickName;
-
-      if (!userNickName) 
-      return res.send(errResponse(baseResponse.USERNICKNAME_USERID_NOT_EXIST));
-
-      const userByuserNickName = await userProvider.retrieveUser2(userNickName);
-      return res.send(response(baseResponse.SUCCESS, userByuserNickName));
+ exports.check = async function (req, res) {
+    const userIdResult = req.verifiedToken.userId;
+    console.log(userIdResult);
+    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * API No. 6

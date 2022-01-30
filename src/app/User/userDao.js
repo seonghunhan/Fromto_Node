@@ -88,15 +88,6 @@ async function selectUserAccount(connection, id) {
   return selectUserAccountRow[0];
 }
 
-async function updateUserInfo(connection, id, nickname) {
-  const updateUserQuery = `
-  UPDATE UserInfo 
-  SET nickname = ?
-  WHERE id = ?;`;
-  const updateUserRow = await connection.query(updateUserQuery, [nickname, id]);
-  return updateUserRow[0];
-}
-
 async function updateAuthCode(connection, code, email){
   const list = [code, email]
   const updateCodeQuery =  `
@@ -112,7 +103,6 @@ async function selectAuthCode(connection,email){
   FROM authCode 
   WHERE id = ?;`;
   const selectCodeRow = await connection.query(selectCodeQuery,email);
-
   return selectCodeRow;
 }
 
@@ -160,6 +150,26 @@ async function passwordAuthcodeCheck(connection,email){
     return selectCodeRow;
   }
 
+async function deletePasswordAuthCode(connection, email){
+    const deleteCodeQuery = `
+    DELETE FROM authCode
+    WHERE id = ?;
+    `;
+    const deleteCode = await connection.query(deleteCodeQuery, email);
+    //console.log(deleteCode)
+    return deleteCode;
+  }
+
+async function updatePassword(connection, email, password) {
+    const updateUserQuery = `
+    UPDATE UserInfo 
+    SET password = ?
+    WHERE id = ?;`;
+    const updateUserRow = await connection.query(updateUserQuery, [password, email]);
+    return updateUserRow[0];
+}
+  
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -168,11 +178,12 @@ module.exports = {
   insertUserInfo,
   selectUserPassword,
   selectUserAccount,
-  updateUserInfo,
   updateAuthCode,
   selectAuthCode,
   selectUserInfoforPassword,
   deleteAuthCode,
   updatePasswordAuthcode,
   passwordAuthcodeCheck,
+  deletePasswordAuthCode,
+  updatePassword,
 };

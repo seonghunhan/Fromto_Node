@@ -8,11 +8,11 @@ module.exports = function(app){
     // 1. 유저 생성 (회원가입) API
     app.post('/app/newusers', user.postUsers);
 
-    // 2. 아이디 이메일 중복 체크 API
-    app.get('/app/users/:id', user.checkInfoById);
+    // 2. 아이디 중복 체크 API
+    app.get('/app/users/idcheck/:id', user.checkInfoById);
 
     // 3. 닉네임 중복 체크 API
-    app.get('/app/usersCheck/:nickname', user.checkInfoByNickname);
+    app.get('/app/users/nicknamecheck/:nickname', user.checkInfoByNickname);
 
     // 4. 로그인 하기 API (JWT 생성)
     app.post('/app/login', user.login);
@@ -29,8 +29,16 @@ module.exports = function(app){
     // 8. 비밀번호 바꾸기 인증번호 API
     app.post('/app/users/changePassword', user.changePasswordAuthcode);
 
-    // 9. 비밀번호 인증번호 체크 API
-    app.post('/app/newusers/passwordAuthcodeCheck', user.checkCode);
+    // 9. 비밀번호 바꾸기 API
+    app.post('/app/newusers/passwordAuthcodeCheck', user.passwordcheckCode);
+
+    // 10. 비밀번호 인증코드 삭제 API
+    app.post('/app/newusers/deletePasswordAuthcode', user.deletePasswordAuthcode);
+
+    // 11. 자동로그인 API
+    app.get('/app/auto-login', jwtMiddleware, user.check); // jwtMiddleware페이지 거치고 check간다
+
+
 
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 

@@ -127,3 +127,10 @@ exports.passwordAuthcodeCheck = async function (email) {
   const realcode = selectCode[0][0].passwordcode;
   return realcode;
 }
+
+exports.passwordcodeCheckForDelete = async function (email) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const deleteCode = await userDao.deletePasswordAuthCode(connection,email);
+  connection.release();
+  return deleteCode
+}

@@ -128,3 +128,23 @@ exports.generateRandom = async function (min, max) {
     return ranNum;
 
 }
+
+exports.editPassword = async function (email, password) {
+
+    try{
+    const hashedPassword = await crypto
+    .createHash("sha512")
+    .update(password)
+    .digest("hex");
+
+    const connection = await pool.getConnection(async (conn) => conn);
+    const editUserResult = await userDao.updatePassword(connection,email,hashedPassword)
+    connection.release();
+
+    return response(baseResponse.SUCCESS);
+
+    }catch (err) {
+        logger.error(`App - editPassword Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
