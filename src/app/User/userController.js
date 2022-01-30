@@ -287,7 +287,26 @@ exports.changePasswordAuthcode = async function (req, res) {
     }
 }
 
+/**
+ * API No. 9
+ * API Name :  비밀번호 인증번호 체크 API
+ * [POST] /app/newusers/passwordAuthcodeCheck
+ * body : checkcode, email
+ */
+ exports.checkCode = async function (req, res) {
 
+    const {checkcode, email} = req.body;
+    
+    const realcode = await userProvider.passwordAuthcodeCheck(email)
+
+    if (!checkcode){
+        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_EMPTY));
+    }else if (checkcode == realcode){
+        return res.send(response(baseResponse.SUCCESS));
+    }else if (checkcode != realcode){
+        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_WRONG));
+    }
+}
 
 
 
