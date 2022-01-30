@@ -26,6 +26,8 @@ module.exports = {
     SIGNIN_EMAIL_ERROR_TYPE : { "isSuccess": false, "code": 2010, "message":"이메일을 형식을 정확하게 입력해주세요." },
     SIGNIN_PASSWORD_EMPTY : { "isSuccess": false, "code": 2011, "message": "비밀번호를 입력 해주세요." },
     SIGNIN_CHANGEPASSWORD_INFO_EMPTY : { "isSuccess": false, "code": 2012, "message": "입력된 정보와 일치하는 계정이 존재하지 않습니다." },
+    SIGNIN_PASSWORDAUTHCODE_EMPTY : { "isSuccess": false,"code": 2013,"message":"인증번호를 입력 해주세요." },
+    SIGNIN_PASSWORDAUTHCODE_WRONG :{ "isSuccess": false,"code": 2014,"message":"인증번호가 일치하지 않습니다." },
 
     USER_USERID_EMPTY : { "isSuccess": false, "code": 2012, "message": "userId를 입력해주세요." },
     USER_USERID_NOT_EXIST : { "isSuccess": false, "code": 2013, "message": "해당 회원이 존재하지 않습니다." },

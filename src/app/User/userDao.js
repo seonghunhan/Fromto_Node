@@ -97,23 +97,33 @@ async function updateUserInfo(connection, id, nickname) {
   return updateUserRow[0];
 }
 
-async function updateAuthCode(connection, code){
+async function updateAuthCode(connection, code, email){
+  const list = [code, email]
   const updateCodeQuery =  `
-  UPDATE authCode 
-  SET emailcode = ?
-  WHERE fixedIdx = 1;`;
-  const updateCodeRow = await connection.query(updateCodeQuery, code);
+  INSERT INTO authCode (emailcode, id)
+  VALUES (?, ?);`;
+  const updateCodeRow = await connection.query(updateCodeQuery, list);
   return updateCodeRow;
 }
 
-async function selectAuthCode(connection){
+async function selectAuthCode(connection,email){
   const selectCodeQuery = `
   SELECT  emailcode
   FROM authCode 
-  WHERE fixedIdx = 1;`;
-  const selectCodeRow = await connection.query(selectCodeQuery);
+  WHERE id = ?;`;
+  const selectCodeRow = await connection.query(selectCodeQuery,email);
 
   return selectCodeRow;
+}
+
+async function deleteAuthCode(connection, email){
+  const deleteCodeQuery = `
+  DELETE FROM authCode
+  WHERE id = ?;
+  `;
+  const deleteCode = await connection.query(deleteCodeQuery, email);
+  //console.log(deleteCode)
+  return deleteCode;
 }
 
 async function selectUserInfoforPassword(connection, birth, gender, id) {
@@ -128,6 +138,28 @@ async function selectUserInfoforPassword(connection, birth, gender, id) {
   return selectUserRow[0][0]
 }
 
+async function updatePasswordAuthcode(connection, ranNum, id){
+  const list = [ranNum, id]
+  const updatePasswordCode = `
+  INSERT INTO authCode (passwordcode, id)
+  VALUES (?,?);
+  `;
+  const updateCodeRow = await connection.query(updatePasswordCode, list);
+
+  return(updateCodeRow)
+ 
+}
+
+async function passwordAuthcodeCheck(connection,email){
+    const selectCodeQuery = `
+    SELECT  passwordcode
+    FROM authCode 
+    WHERE id = ?;`;
+    const selectCodeRow = await connection.query(selectCodeQuery,email);
+  
+    return selectCodeRow;
+  }
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -140,4 +172,7 @@ module.exports = {
   updateAuthCode,
   selectAuthCode,
   selectUserInfoforPassword,
+  deleteAuthCode,
+  updatePasswordAuthcode,
+  passwordAuthcodeCheck,
 };

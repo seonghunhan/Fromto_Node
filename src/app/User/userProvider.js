@@ -84,20 +84,27 @@ exports.accountCheck = async function (id) {
   return userAccountResult;
 };
 
-exports.authcodeUpdate = async function (code) {
+exports.authcodeUpdate = async function (code, email) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const updateCode = await userDao.updateAuthCode(connection, code);
+  const updateCode = await userDao.updateAuthCode(connection, code, email);
   connection.release();
 
   return updateCode;
 }
 
-exports.authcodeCheck = async function () {
+exports.authcodeCheck = async function (email) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const selectCode = await userDao.selectAuthCode(connection);
+  const selectCode = await userDao.selectAuthCode(connection,email);
   connection.release();
   const realcode = selectCode[0][0].emailcode;
   return realcode;
+}
+
+exports.codeCheckForDelete = async function (email) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const deleteCode = await userDao.deleteAuthCode(connection,email);
+  connection.release();
+  return deleteCode
 }
 
 exports.usercheckForChangePassword = async function(birth, gender, id) {
@@ -105,4 +112,18 @@ exports.usercheckForChangePassword = async function(birth, gender, id) {
   const UserInfo = await userDao.selectUserInfoforPassword(connection, birth, gender, id);
   connection.release();
   return UserInfo;
+}
+
+exports.passwordAuthcodeUpdate = async function(ranNum, id) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const updatePasswordCode = await userDao.updatePasswordAuthcode(connection, ranNum, id);
+  connection.release();
+}
+
+exports.passwordAuthcodeCheck = async function (email) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const selectCode = await userDao.passwordAuthcodeCheck(connection,email);
+  connection.release();
+  const realcode = selectCode[0][0].passwordcode;
+  return realcode;
 }

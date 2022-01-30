@@ -23,10 +23,14 @@ module.exports = function(app){
     // 6. 인증코드 체크 API
     app.post('/app/newusers/authcodeCheck', user.checkCode);
 
-    // 7. 비밀번호 바꾸기 인증번호 API
+    // 7. 회원가입 인증코드 삭제 API
+    app.post('/app/newusers/deleteAuthcode', user.deleteEmailAuthcode);
+
+    // 8. 비밀번호 바꾸기 인증번호 API
     app.post('/app/users/changePassword', user.changePasswordAuthcode);
 
-
+    // 9. 비밀번호 인증번호 체크 API
+    app.post('/app/newusers/passwordAuthcodeCheck', user.checkCode);
 
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 

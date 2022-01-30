@@ -164,7 +164,7 @@ exports.authemail = async function (req, res) {
         text: '오른쪽 인증번호를 입력해 주세요 : ' + ranNum
     };
 
-    const authcodeResult = await userProvider.authcodeUpdate(ranNum)
+    const authcodeResult = await userProvider.authcodeUpdate(ranNum, email)
     
     //checkCode(req, res, ranNum)
 
@@ -184,13 +184,13 @@ exports.authemail = async function (req, res) {
  * API No. 6
  * API Name :  인증코드 체크 API
  * [POST] /app/newusers/authemail
- * body : checkcode
+ * body : checkcode, email
  */
 exports.checkCode = async function (req, res) {
 
-        const {checkcode} = req.body;
+        const {checkcode, email} = req.body;
         
-        const realcode = await userProvider.authcodeCheck()
+        const realcode = await userProvider.authcodeCheck(email)
 
         
 
@@ -210,10 +210,25 @@ exports.checkCode = async function (req, res) {
         }
 }
 
-
-
 /**
  * API No. 7
+ * API Name :  회원가입 인증코드 삭제 API
+ * [POST] /app/newusers/deleteAuthcode
+ * body : email
+ */
+exports.deleteEmailAuthcode = async function (req, res) {
+
+    const {email} = req.body
+
+    const resultResponse = await userProvider.codeCheckForDelete(email)
+
+    if(resultResponse){
+        return res.send(response(baseResponse.SUCCESS));
+    }
+}
+
+/**
+ * API No. 8
  * API Name :  비밀번호 바꾸기 인증번호 API
  * [POST] /app/users/changePassword
  * body : birth, gender, id
@@ -227,7 +242,6 @@ exports.changePasswordAuthcode = async function (req, res) {
         if(!Userinfo){
             return res.send(response(baseResponse.SIGNIN_CHANGEPASSWORD_INFO_EMPTY))
         }else if (Userinfo){
-            console.log("다음 고고고")
             
             var ranNum = await userService.generateRandom(111111,999999)
         
@@ -237,7 +251,9 @@ exports.changePasswordAuthcode = async function (req, res) {
                 subject: '비밀번호 변경',
                 text: '임시비밀번호 : ' + ranNum
             };
-        
+            
+            const authcodeResult = await userProvider.passwordAuthcodeUpdate(ranNum, id)
+
             //메일 전송
             const result = await smtpTransport.sendMail(mailOption, function(error){
                 if (error) {
@@ -248,11 +264,28 @@ exports.changePasswordAuthcode = async function (req, res) {
                 }
             });
         }
-
-        
 }
 
+/**
+ * API No. 9
+ * API Name :  비밀번호 인증번호 체크 API
+ * [POST] /app/newusers/passwordAuthcodeCheck
+ * body : checkcode, email
+ */
+ exports.checkCode = async function (req, res) {
 
+    const {checkcode, email} = req.body;
+    
+    const realcode = await userProvider.passwordAuthcodeCheck(email)
+
+    if (!checkcode){
+        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_EMPTY));
+    }else if (checkcode == realcode){
+        return res.send(response(baseResponse.SUCCESS));
+    }else if (checkcode != realcode){
+        return res.send(response(baseResponse.SIGNIN_PASSWORDAUTHCODE_WRONG));
+    }
+}
 
 
 
