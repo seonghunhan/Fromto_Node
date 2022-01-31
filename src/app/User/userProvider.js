@@ -134,3 +134,13 @@ exports.passwordcodeCheckForDelete = async function (email) {
   connection.release();
   return deleteCode
 }
+
+exports.retrieveMypage = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const selectNickname = await userDao.selectUserMypage1(connection,userIdx);
+  const selectImgUrl = await userDao.selectUserMypage2(connection,userIdx);
+  connection.release();
+  const resultRow = [selectNickname, selectImgUrl]
+  return resultRow
+
+}

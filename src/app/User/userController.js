@@ -316,30 +316,30 @@ exports.changePasswordAuthcode = async function (req, res) {
  */
  exports.check = async function (req, res) {
     const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
+    const userIdxResult = req.verifiedToken.userIdx;
+    console.log(userIdResult, userIdxResult);
+    
     return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
 };
 
 
-/** JWT 토큰 검증 API
- *  * API No. 11
- * [GET] /app/auto-login
+/**
+ * API No. 12
+ * API Name :  MyPageUI API(닉네임, 프로필url 불러오기)
+ * [GET] /app/login/mypage
  */
- exports.check = async function (req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
-};
+exports.mypage = async function (req, res) {
+    const userIdxResult = req.verifiedToken.userIdx;
 
-/** JWT 토큰 검증 API
- *  * API No. 11
- * [GET] /app/auto-login
- */
- exports.check = async function (req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
-};
+    // console.log(userIdxResult)
+
+    userNickname = await userProvider.retrieveMypage(userIdxResult)
+
+    console.log(userNickname)
+    return response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]});
+
+    return res.send(response(baseResponse.SUCCESS));
+}
 
 
 
@@ -387,15 +387,7 @@ exports.patchUsers = async function (req, res) {
 
 
 
-// JWT 이 후 주차에 다룰 내용
-/** JWT 토큰 검증 API
- * [GET] /app/auto-login
- */
-exports.check = async function (req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
-};
+
 
 
 

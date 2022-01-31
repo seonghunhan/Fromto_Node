@@ -76,15 +76,18 @@ async function selectUserPassword(connection, selectUserPasswordParams) {
 }
 
 // 유저 계정 상태 체크 (jwt 생성 위해 id 값도 가져온다.)
+// 로그인할때!!여기서 id랑 idx가져오는데 여기서 가져오는 idx기준으로 회원관련 정보를
+// 여기서 끌고온다!!!!!!!
 async function selectUserAccount(connection, id) {
   const selectUserAccountQuery = `
-        SELECT  id
+        SELECT  id, idx
         FROM UserInfo 
         WHERE id = ?;`;
   const selectUserAccountRow = await connection.query(
       selectUserAccountQuery,
       id
   );
+  // console.log(selectUserAccountRow[0])
   return selectUserAccountRow[0];
 }
 
@@ -168,7 +171,29 @@ async function updatePassword(connection, email, password) {
     const updateUserRow = await connection.query(updateUserQuery, [password, email]);
     return updateUserRow[0];
 }
-  
+
+async function selectUserMypage1(connection, userIdx) {
+  const selectMypageInfoQuery = `
+  SELECT UserInfo.nickname
+  FROM UserInfo INNER JOIN MyPage ON UserInfo.idx = MyPage.userIdx
+  WHERE UserInfo.idx = ?;
+  `;
+  const selectMypageInfoRow = await connection.query(selectMypageInfoQuery, userIdx);
+  //console.log(selectMypageInfoRow[0][0].nickname)
+  return selectMypageInfoRow[0][0].nickname;
+}
+
+async function selectUserMypage2(connection, userIdx) {
+  const selectMypageInfoQuery = `
+  SELECT profileImgUrl
+  FROM MyPage
+  WHERE userIdx = ?;
+  `;
+  const selectMypageInfoRow = await connection.query(selectMypageInfoQuery, userIdx);
+  //console.log(selectMypageInfoRow[0][0].profileImgUrl)
+  return selectMypageInfoRow[0][0].profileImgUrl;
+}
+
 
 module.exports = {
   selectUser,
@@ -186,4 +211,6 @@ module.exports = {
   passwordAuthcodeCheck,
   deletePasswordAuthCode,
   updatePassword,
+  selectUserMypage1,
+  selectUserMypage2,
 };

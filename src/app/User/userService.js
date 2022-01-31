@@ -85,11 +85,13 @@ exports.postSignIn = async function (id, password) {
         // }
 
         console.log(userInfoRows[0].id) // DB의 userId
+        console.log(userInfoRows[0].idx)
 
         //토큰 생성 Service
         let token = await jwt.sign(
             {
                 userId: userInfoRows[0].id,
+                userIdx: userInfoRows[0].idx,
             }, // 토큰의 내용(payload)
             secret_config.jwtsecret, // 비밀키
             {
@@ -98,7 +100,7 @@ exports.postSignIn = async function (id, password) {
             } // 유효 기간 365일
         );
 
-        return response(baseResponse.SUCCESS, {'userId': userInfoRows[0].id, 'jwt': token});
+        return response(baseResponse.SUCCESS, {'userId': userInfoRows[0].id, 'useridx': userInfoRows[0].idx, 'jwt': token});
 
     } catch (err) {
         logger.error(`App - postSignIn Service error\n: ${err.message} \n${JSON.stringify(err)}`);

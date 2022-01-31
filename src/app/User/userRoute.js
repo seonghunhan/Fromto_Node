@@ -38,7 +38,8 @@ module.exports = function(app){
     // 11. 자동로그인 API
     app.get('/app/auto-login', jwtMiddleware, user.check); // jwtMiddleware페이지 거치고 check간다
 
-
+    // 12. MyPageUI API
+    app.get('/app/login/mypage', jwtMiddleware, user.mypage); 
 
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 
