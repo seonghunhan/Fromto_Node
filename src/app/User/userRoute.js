@@ -41,6 +41,9 @@ module.exports = function(app){
     // 12. MyPageUI API
     app.get('/app/login/mypage', jwtMiddleware, user.mypage); 
 
+    // 13. 프로필사진 변경 API
+    app.post('/app/login/mypage/changeProfileImgUrl', jwtMiddleware, user.changeProfileUrl);
+
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 
 

@@ -194,6 +194,39 @@ async function selectUserMypage2(connection, userIdx) {
   return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
+async function selectUserIdx(connection, userIdx) {
+  const selectuserIdxQuery = `
+  SELECT userIdx
+  FROM MyPage
+  WHERE userIdx = ?;
+  `;
+  const selectResultRow = await connection.query(selectuserIdxQuery, userIdx);
+
+
+  return selectResultRow[0]
+}
+
+async function insertNewprofileImgUrl(connection, userIdx, ImgUrl) {
+  const insertQuery = `
+  INSERT INTO MyPage (userIdx, profileImgUrl)
+  VALUES (?,?);
+  `;
+  const insertResultRow = await connection.query(insertQuery, [userIdx, ImgUrl]);
+
+  console.log(insertResultRow[0])
+  return insertResultRow[0]
+}
+
+async function updateprofileImgUrl(connection, userIdx, ImgUrl) {
+  const updateProfileUrlQuery = `
+  UPDATE MyPage
+  SET profileImgUrl = ?
+  WHERE userIdx = ?;
+  `;
+  const updateResultRow = await connection.query(updateProfileUrlQuery, [ImgUrl, userIdx]);
+  console.log(updateResultRow)
+  //return selectMypageInfoRow[0][0].profileImgUrl;
+}
 
 module.exports = {
   selectUser,
@@ -213,4 +246,7 @@ module.exports = {
   updatePassword,
   selectUserMypage1,
   selectUserMypage2,
+  selectUserIdx,
+  insertNewprofileImgUrl,
+  updateprofileImgUrl,
 };

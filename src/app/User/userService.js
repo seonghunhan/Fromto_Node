@@ -150,3 +150,25 @@ exports.editPassword = async function (email, password) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.editProfileImgUrl = async function (userIdx, ImgUrl){
+
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+        const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
+    
+        if (selectUserIdxforUpdate.length < 1){
+        const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
+        return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : ImgUrl});
+        } else {
+        const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
+        return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
+        }
+        connection.release();
+
+    }catch (err) {
+        logger.error(`App - editProfileImgUrl Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+

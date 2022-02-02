@@ -333,13 +333,35 @@ exports.mypage = async function (req, res) {
 
     // console.log(userIdxResult)
 
-    userNickname = await userProvider.retrieveMypage(userIdxResult)
+    const userNickname = await userProvider.retrieveMypage(userIdxResult)
 
-    console.log(userNickname)
-    return response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]});
+    //console.log(userNickname[0])
+    return res.send(response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]}));
 
-    return res.send(response(baseResponse.SUCCESS));
 }
+
+/**
+ * API No. 13
+ * API Name :  프로필사진 변경 API
+ * [POST] /app/login/mypage/changeProfileImgUrl
+ */
+exports.changeProfileUrl = async function (req, res) {
+    const userIdxResult = req.verifiedToken.userIdx;
+    const {ImgUrl} = req.body
+
+    //console.log(userIdxResult)
+    const changeprofileUrl = await userService.editProfileImgUrl(userIdxResult, ImgUrl)
+
+    return res.send(changeprofileUrl)
+
+}
+
+
+
+
+
+
+
 
 
 
