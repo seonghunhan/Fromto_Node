@@ -144,17 +144,10 @@ exports.retrieveMypage = async function (userIdx) {
   return resultRow
 }
 
-exports.profileImgUrlUpdate = async function (userIdx, ImgUrl){
+exports.retrieveSettings = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
-
-  if (selectUserIdxforUpdate.length < 1){
-    const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
-    return insertNewProfileImgUrl
-  } else {
-    const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
-    return updateUrl
-  }
+  const selectSettingsInfo = await userDao.selectSettingsParmes(connection, userIdx)
   connection.release();
+  return selectSettingsInfo
 }
 

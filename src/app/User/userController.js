@@ -356,11 +356,46 @@ exports.changeProfileUrl = async function (req, res) {
 
 }
 
+/**
+ * API No. 14
+ * API Name : 셋팅 API
+ * [GET] /app/login/mypage/settings
+ */
 
 
+exports.settings = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const settingsResult = await userProvider.retrieveSettings(userIdx)
+
+    const userId = settingsResult.id
+    const Alarm = Boolean(settingsResult.alarm)
+
+    return res.send(response(baseResponse.SUCCESS, {'Id': userId, 'Alarm': Alarm}));
+
+}
+
+/**
+ * API No. 15
+ * API Name : 셋팅 알람설정 API
+ * [POST] /app/login/mypage/settings/alarmActive
+ */
 
 
+ exports.alarm = async function (req, res) {
 
+    const userIdx = req.verifiedToken.userIdx;
+
+    const {alarm} = req.body;
+
+    const boolalarm = Boolean(alarm)
+
+
+    const AlarmActiveResult = await userService.editAlarmActive(userIdx, boolalarm)
+
+    return res.send(AlarmActiveResult)
+}
 
 
 

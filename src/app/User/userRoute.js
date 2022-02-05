@@ -44,6 +44,13 @@ module.exports = function(app){
     // 13. 프로필사진 변경 API
     app.post('/app/login/mypage/changeProfileImgUrl', jwtMiddleware, user.changeProfileUrl);
 
+    // 14. 셋팅 API
+    app.get('/app/login/mypage/settings', jwtMiddleware, user.settings);
+
+    // 15. 셋팅 알람설정 API
+    app.post('/app/login/mypage/settings/alarmActive', jwtMiddleware, user.alarm);
+
+
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 
 

@@ -228,6 +228,26 @@ async function updateprofileImgUrl(connection, userIdx, ImgUrl) {
   //return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
+async function selectSettingsParmes(connection, userIdx) {
+  const selectSettingsQuery = `
+  SELECT id, alarm
+  FROM UserInfo
+  WHERE idx = ?;
+  `;
+  const selectResultRow = await connection.query(selectSettingsQuery, userIdx)
+  return selectResultRow[0][0]
+}
+
+async function updateAlarm(connection, userIdx, alarm){
+    const updateAlarmQuery = `
+    UPDATE UserInfo
+    SET alarm = ?
+    WHERE idx = ?;
+    `;
+    const updateResultRow = await connection.query(updateAlarmQuery, [alarm, userIdx])
+    return updateResultRow
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -249,4 +269,6 @@ module.exports = {
   selectUserIdx,
   insertNewprofileImgUrl,
   updateprofileImgUrl,
+  selectSettingsParmes,
+  updateAlarm,
 };
