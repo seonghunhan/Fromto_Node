@@ -50,6 +50,12 @@ module.exports = function(app){
     // 15. 셋팅 알람설정 API
     app.post('/app/login/mypage/settings/alarmActive', jwtMiddleware, user.alarm);
 
+    // 16. 편지 작성 API (닉네임제공)
+    app.get('/app/login/writingLetter', jwtMiddleware, user.getUserNickname);
+
+    // 17. 편지 보내기 API (DB저장)
+    app.post('/app/login/sendingLetter', jwtMiddleware, user.postWritedLetter);
+
 
     // // 3. 유저 조회 API (+ 검색)
     // app.get('/app/users',user.getUsers); 

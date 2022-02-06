@@ -398,7 +398,40 @@ exports.settings = async function (req, res) {
 }
 
 
+/**
+ * API No. 16
+ * API Name : 편지 작성 API (닉네임제공)
+ * [GET] /app/login/writingeLetter
+ */
 
+
+ exports.getUserNickname = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const selectResult = await userProvider.retrieveUserNickname(userIdx)
+
+    return res.send(response(baseResponse.SUCCESS, {'nickname': selectResult}));
+
+}
+
+/**
+ * API No. 17
+ * API Name : 편지 보내기 API (DB저장)
+ * [POST] /app/login/sendingLetter
+ */
+
+
+ exports.postWritedLetter = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const {letterTitle, movieTitle, contents, senderNickname, recipientNickname, posterurl} = req.body;
+
+    const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, recipientNickname, posterurl)
+
+    return res.send(createLetterResult)
+}
 
 
 

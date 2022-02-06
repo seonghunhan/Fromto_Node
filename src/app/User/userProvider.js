@@ -151,3 +151,9 @@ exports.retrieveSettings = async function (userIdx) {
   return selectSettingsInfo
 }
 
+exports.retrieveUserNickname = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const userNicknameResult = await userDao.selectUserNicknameByIdx(connection, userIdx)
+  connection.release();
+  return userNicknameResult
+}

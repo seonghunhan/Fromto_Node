@@ -200,3 +200,45 @@ exports.editAlarmActive = async function (userIdx, alarm){
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, recipientNickname, posterurl){
+
+    try{
+        const senderIdx = userIdx
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        const poseterIdx = await userDao.insertPosterurl(connection, posterurl);
+        const selectUseridxByNicknameResult= await userDao.selectUseridxByNickname(connection, recipientNickname);
+
+        if (!selectUseridxByNicknameResult) {
+            return errResponse(baseResponse.USER_USERID_NOT_EXIST);;
+        } else if (selectUseridxByNicknameResult) {
+            const recipientIdx = selectUseridxByNicknameResult.idx
+
+            const insertLetterInfoResult = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx ); 
+            console.log("성공?")
+        } else {
+            return errResponse(baseResponse.DB_ERROR);
+        }
+        // if (alarm == true && updateAlarm) {
+        //     return response(baseResponse.SUCCESS, {'Alarm기능을 활성화 시켰습니다' : alarm});
+        // } else if (alarm == false && updateAlarm){
+        //     return response(baseResponse.SUCCESS2, {'Alarm기능을 비활성화 시켰습니다' : alarm});
+        // } else {
+        //     return errResponse(baseResponse.DB_ERROR);
+        // }
+
+        // if (selectUserIdxforUpdate.length < 1){
+        // const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
+        // return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : ImgUrl});
+        // } else {
+        // const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
+        // return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
+        // }
+        // connection.release();
+
+    }catch (err) {
+        logger.error(`App - editWritingLetter Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

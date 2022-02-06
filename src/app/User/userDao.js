@@ -101,6 +101,7 @@ async function updateAuthCode(connection, code, email){
 }
 
 async function selectAuthCode(connection,email){
+  console.log(email)
   const selectCodeQuery = `
   SELECT  emailcode
   FROM authCode 
@@ -248,6 +249,47 @@ async function updateAlarm(connection, userIdx, alarm){
     return updateResultRow
 }
 
+async function selectUserNicknameByIdx(connection, userIdx) {
+  const selectuserNicknameQuery = `
+  SELECT nickname
+  FROM UserInfo
+  WHERE idx = ?;
+  `;
+  const selectResultRow = await connection.query(selectuserNicknameQuery, userIdx);
+  //console.log(selectResultRow[0][0].nickname)
+
+  return selectResultRow[0][0].nickname
+}
+
+async function insertPosterurl(connection, posterurl) {
+  const insertQuery = `
+  INSERT INTO MovieProfileImg (movieImgUrlForLetter)
+  VALUES (?);
+  `;
+  const insertResultRow = await connection.query(insertQuery, posterurl);
+  return insertResultRow[0].insertId
+}
+
+async function selectUseridxByNickname(connection, recipientNickname) {
+  const selectuserIdxQuery = `
+  SELECT idx
+  FROM UserInfo
+  WHERE nickname = ?;
+  `;
+  const selectResultRow = await connection.query(selectuserIdxQuery, recipientNickname);
+
+  return selectResultRow[0][0]
+}
+
+async function insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx) {
+  const insertQuery = `
+  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, recipientIdx, posterIdx)
+  VALUES (?,?,?,?,?,?);
+  `;
+  const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx]);
+  //return insertResultRow[0].insertId
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -271,4 +313,8 @@ module.exports = {
   updateprofileImgUrl,
   selectSettingsParmes,
   updateAlarm,
+  selectUserNicknameByIdx,
+  selectUseridxByNickname,
+  insertPosterurl,
+  insertLetterInfo,
 };
