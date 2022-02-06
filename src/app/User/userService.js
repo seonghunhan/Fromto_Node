@@ -216,26 +216,10 @@ exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, 
             const recipientIdx = selectUseridxByNicknameResult.idx
 
             const insertLetterInfoResult = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx ); 
-            console.log("성공?")
+            return response(baseResponse.SUCCESS);
         } else {
             return errResponse(baseResponse.DB_ERROR);
         }
-        // if (alarm == true && updateAlarm) {
-        //     return response(baseResponse.SUCCESS, {'Alarm기능을 활성화 시켰습니다' : alarm});
-        // } else if (alarm == false && updateAlarm){
-        //     return response(baseResponse.SUCCESS2, {'Alarm기능을 비활성화 시켰습니다' : alarm});
-        // } else {
-        //     return errResponse(baseResponse.DB_ERROR);
-        // }
-
-        // if (selectUserIdxforUpdate.length < 1){
-        // const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
-        // return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : ImgUrl});
-        // } else {
-        // const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
-        // return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
-        // }
-        // connection.release();
 
     }catch (err) {
         logger.error(`App - editWritingLetter Service error\n: ${err.message}`);

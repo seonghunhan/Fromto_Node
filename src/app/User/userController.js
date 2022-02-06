@@ -426,7 +426,7 @@ exports.settings = async function (req, res) {
 
     const userIdx = req.verifiedToken.userIdx;
 
-    const {letterTitle, movieTitle, contents, senderNickname, recipientNickname, posterurl} = req.body;
+    const {letterTitle, movieTitle, contents, recipientNickname, posterurl} = req.body;
 
     const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, recipientNickname, posterurl)
 
