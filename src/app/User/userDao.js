@@ -290,6 +290,18 @@ async function insertLetterInfo(connection, letterTitle, movieTitle, contents, s
   //return insertResultRow[0].insertId
 }
 
+async function selectCountIscheckedLetter(connection, userIdx) {
+  const selectQuery = `
+  SELECT COUNT(*)
+  FROM Letter
+  WHERE recipientIdx = ? AND ischecked = false;
+  `;
+  const selectResultRow = await connection.query(selectQuery, userIdx);
+  const ResultRow = selectResultRow[0][0]
+
+  return Object.values(ResultRow)[0]
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -317,4 +329,5 @@ module.exports = {
   selectUseridxByNickname,
   insertPosterurl,
   insertLetterInfo,
+  selectCountIscheckedLetter,
 };

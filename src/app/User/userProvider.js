@@ -3,6 +3,10 @@ const { logger } = require("../../../config/winston");
 
 const userDao = require("./userDao");
 
+const baseResponse = require("../../../config/baseResponseStatus");
+const {response} = require("../../../config/response");
+const {errResponse} = require("../../../config/response");
+
 // Provider: Read 비즈니스 로직 처리
 
 exports.CheckUserById = async function (userId) {
@@ -157,3 +161,16 @@ exports.retrieveUserNickname = async function (userIdx) {
   connection.release();
   return userNicknameResult
 }
+
+exports.retrieveIscheckedLetter = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const ischeckedResult = await userDao.selectCountIscheckedLetter(connection, userIdx)
+  connection.release();
+
+  if (ischeckedResult > 0) {
+    return response(baseResponse.SUCCESS, {'안읽은 편지의 개수' : ischeckedResult});
+  } else if (ischeckedResult == 0){
+    return response(baseResponse.SUCCESS2);
+  }
+}
+

@@ -38,23 +38,34 @@ module.exports = function(app){
     // 11. 자동로그인 API
     app.get('/app/auto-login', jwtMiddleware, user.check); // jwtMiddleware페이지 거치고 check간다
 
-    // 12. MyPageUI API
-    app.get('/app/login/mypage', jwtMiddleware, user.mypage); 
+    // // 12. MyPageUI API (닉네임, 사진불러오기)
+    // app.get('/app/login/mypage', jwtMiddleware, user.mypage); 
 
-    // 13. 프로필사진 변경 API
+    // 13. MyPageUI API (내가쓴편지 포스터 url불러오기)
+    app.get('/app/login/mypage2', jwtMiddleware, user.mypage); 
+
+    // 14. 프로필사진 변경 API
     app.post('/app/login/mypage/changeProfileImgUrl', jwtMiddleware, user.changeProfileUrl);
 
-    // 14. 셋팅 API
+    // 15. 셋팅 API
     app.get('/app/login/mypage/settings', jwtMiddleware, user.settings);
 
-    // 15. 셋팅 알람설정 API
+    // 16. 셋팅 알람설정 API
     app.post('/app/login/mypage/settings/alarmActive', jwtMiddleware, user.alarm);
 
-    // 16. 편지 작성 API (닉네임제공)
+    // 17. 편지 작성 API (닉네임제공)
     app.get('/app/login/writingLetter', jwtMiddleware, user.getUserNickname);
 
-    // 17. 편지 보내기 API (DB저장)
+    // 18. 편지 보내기 API (DB저장)
     app.post('/app/login/sendingLetter', jwtMiddleware, user.postWritedLetter);
+
+    // 19. 안읽은 편지 유무 API (홈으로 들어갈때 안읽은 편지 유무 제공)
+    app.get('/app/login/ischeckedLetter', jwtMiddleware, user.getischeckLetter);
+
+
+
+
+
 
 
     // // 3. 유저 조회 API (+ 검색)

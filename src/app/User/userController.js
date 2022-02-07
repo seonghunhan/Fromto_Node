@@ -340,8 +340,25 @@ exports.mypage = async function (req, res) {
 
 }
 
+// /**
+//  * API No. 13
+//  * API Name :  MyPageUI API(닉네임, 프로필url 불러오기)
+//  * [GET] /app/login/mypage
+//  */
+//  exports.mypage = async function (req, res) {
+//     const userIdxResult = req.verifiedToken.userIdx;
+
+//     // console.log(userIdxResult)
+
+//     const userNickname = await userProvider.retrieveMypage(userIdxResult)
+
+//     //console.log(userNickname[0])
+//     return res.send(response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]}));
+
+// }
+
 /**
- * API No. 13
+ * API No. 14
  * API Name :  프로필사진 변경 API
  * [POST] /app/login/mypage/changeProfileImgUrl
  */
@@ -357,7 +374,7 @@ exports.changeProfileUrl = async function (req, res) {
 }
 
 /**
- * API No. 14
+ * API No. 15
  * API Name : 셋팅 API
  * [GET] /app/login/mypage/settings
  */
@@ -377,7 +394,7 @@ exports.settings = async function (req, res) {
 }
 
 /**
- * API No. 15
+ * API No. 16
  * API Name : 셋팅 알람설정 API
  * [POST] /app/login/mypage/settings/alarmActive
  */
@@ -399,7 +416,7 @@ exports.settings = async function (req, res) {
 
 
 /**
- * API No. 16
+ * API No. 17
  * API Name : 편지 작성 API (닉네임제공)
  * [GET] /app/login/writingeLetter
  */
@@ -416,7 +433,7 @@ exports.settings = async function (req, res) {
 }
 
 /**
- * API No. 17
+ * API No. 18
  * API Name : 편지 보내기 API (DB저장)
  * [POST] /app/login/sendingLetter
  */
@@ -434,7 +451,21 @@ exports.settings = async function (req, res) {
 }
 
 
+/**
+ * API No. 19
+ * API Name : 안읽은 편지 유무 API
+ * [GET] /app/login/sendingLetter
+ */
 
+
+ exports.getischeckLetter = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const checkLetterResult = await userProvider.retrieveIscheckedLetter(userIdx)
+
+    return res.send(checkLetterResult)
+}
 
 
 
