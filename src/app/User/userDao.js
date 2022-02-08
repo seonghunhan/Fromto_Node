@@ -195,6 +195,19 @@ async function selectUserMypage2(connection, userIdx) {
   return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
+async function selectUserMypage3(connection, userIdx) {
+  const selectPosterurlQuery = `
+  select MovieProfileImg.movieImgUrlForLetter
+  from MovieProfileImg inner join Letter on MovieProfileImg.idx = Letter.posterIdx
+  where Letter.senderIdx = ?
+  ORDER BY MovieProfileImg.updateAt ASC
+  LIMIT 3;
+  `;
+  const selectPosterurlRow = await connection.query(selectPosterurlQuery, userIdx);
+
+  return selectPosterurlRow[0]
+}
+
 async function selectUserIdx(connection, userIdx) {
   const selectuserIdxQuery = `
   SELECT userIdx
@@ -202,8 +215,6 @@ async function selectUserIdx(connection, userIdx) {
   WHERE userIdx = ?;
   `;
   const selectResultRow = await connection.query(selectuserIdxQuery, userIdx);
-
-
   return selectResultRow[0]
 }
 
@@ -320,6 +331,7 @@ module.exports = {
   updatePassword,
   selectUserMypage1,
   selectUserMypage2,
+  selectUserMypage3,
   selectUserIdx,
   insertNewprofileImgUrl,
   updateprofileImgUrl,

@@ -27,22 +27,22 @@ module.exports = function(app){
     app.post('/app/newusers/deleteAuthcode', user.deleteEmailAuthcode);
 
     // 8. 비밀번호 바꾸기 인증번호 API
-    app.post('/app/users/changePassword', user.changePasswordAuthcode);
+    app.post('/app/users/passwordAuthcodeCheck', user.changePasswordAuthcode);
 
     // 9. 비밀번호 바꾸기 API
-    app.post('/app/newusers/passwordAuthcodeCheck', user.passwordcheckCode);
-
+    app.post('/app/newusers/changePassword', user.passwordcheckCode);
+    
     // 10. 비밀번호 인증코드 삭제 API
     app.post('/app/newusers/deletePasswordAuthcode', user.deletePasswordAuthcode);
 
     // 11. 자동로그인 API
     app.get('/app/auto-login', jwtMiddleware, user.check); // jwtMiddleware페이지 거치고 check간다
 
-    // // 12. MyPageUI API (닉네임, 사진불러오기)
-    // app.get('/app/login/mypage', jwtMiddleware, user.mypage); 
+    // 12. MyPageUI API (닉네임, 사진불러오기)
+    app.get('/app/login/mypage/userInfo', jwtMiddleware, user.getMypageInfo); 
 
     // 13. MyPageUI API (내가쓴편지 포스터 url불러오기)
-    app.get('/app/login/mypage2', jwtMiddleware, user.mypage); 
+    app.get('/app/login/mypage/writtenPosterurl', jwtMiddleware, user.getMypageProfileurl); 
 
     // 14. 프로필사진 변경 API
     app.post('/app/login/mypage/changeProfileImgUrl', jwtMiddleware, user.changeProfileUrl);
@@ -62,7 +62,8 @@ module.exports = function(app){
     // 19. 안읽은 편지 유무 API (홈으로 들어갈때 안읽은 편지 유무 제공)
     app.get('/app/login/ischeckedLetter', jwtMiddleware, user.getischeckLetter);
 
-
+    // // 20. 안읽은 편지 클릭 API
+    // app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
 
 
 

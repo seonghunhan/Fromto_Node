@@ -230,7 +230,7 @@ exports.deleteEmailAuthcode = async function (req, res) {
 /**
  * API No. 8
  * API Name :  비밀번호 바꾸기 인증번호 API
- * [POST] /app/users/changePassword
+ * [POST] /app/users/passwordAuthcodeCheck
  * body : birth, gender, id
  */
 exports.changePasswordAuthcode = async function (req, res) {
@@ -269,7 +269,7 @@ exports.changePasswordAuthcode = async function (req, res) {
 /**
  * API No. 9
  * API Name :  비밀번호 바꾸기 API
- * [POST] /app/newusers/passwordAuthcodeCheck
+ * [POST] /app/newusers/changePassword
  * body : checkcode, email
  */
  exports.passwordcheckCode = async function (req, res) {
@@ -326,9 +326,9 @@ exports.changePasswordAuthcode = async function (req, res) {
 /**
  * API No. 12
  * API Name :  MyPageUI API(닉네임, 프로필url 불러오기)
- * [GET] /app/login/mypage
+ * [GET] /app/login/mypage/userInfo
  */
-exports.mypage = async function (req, res) {
+exports.getMypageInfo = async function (req, res) {
     const userIdxResult = req.verifiedToken.userIdx;
 
     // console.log(userIdxResult)
@@ -340,22 +340,20 @@ exports.mypage = async function (req, res) {
 
 }
 
-// /**
-//  * API No. 13
-//  * API Name :  MyPageUI API(닉네임, 프로필url 불러오기)
-//  * [GET] /app/login/mypage
-//  */
-//  exports.mypage = async function (req, res) {
-//     const userIdxResult = req.verifiedToken.userIdx;
+/**
+ * API No. 13
+ * API Name :  MyPageUI API(닉네임, 프로필url 불러오기)
+ * [GET] /app/login/mypage/writtenPosterurl
+ */
+ exports.getMypageProfileurl = async function (req, res) {
+    const userIdxResult = req.verifiedToken.userIdx;
 
-//     // console.log(userIdxResult)
+    const selectPosterurlResult = await userProvider.retrievePosterurlForMypage(userIdxResult)
 
-//     const userNickname = await userProvider.retrieveMypage(userIdxResult)
+    return res.send(response(baseResponse.SUCCESS, {'가장먼저쓴포스터3개': selectPosterurlResult}))
 
-//     //console.log(userNickname[0])
-//     return res.send(response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]}));
+}
 
-// }
 
 /**
  * API No. 14
@@ -450,13 +448,11 @@ exports.settings = async function (req, res) {
     return res.send(createLetterResult)
 }
 
-
 /**
  * API No. 19
  * API Name : 안읽은 편지 유무 API
  * [GET] /app/login/sendingLetter
  */
-
 
  exports.getischeckLetter = async function (req, res) {
 
@@ -466,6 +462,21 @@ exports.settings = async function (req, res) {
 
     return res.send(checkLetterResult)
 }
+
+// /**
+//  * API No. 20
+//  * API Name : 안읽은 편지 클릭 API
+//  * [GET] /app/login/readingLetter
+//  */
+
+//  exports.getLetterInfo = async function (req, res) {
+
+//     const userIdx = req.verifiedToken.userIdx;
+
+//     const resultResponse = await userProvider.retrieveLetter(userIdx)
+
+//     //return res.send(createLetterResult)
+// }
 
 
 
