@@ -186,14 +186,7 @@ exports.editAlarmActive = async function (userIdx, alarm){
             return errResponse(baseResponse.DB_ERROR);
         }
 
-        // if (selectUserIdxforUpdate.length < 1){
-        // const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
-        // return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : ImgUrl});
-        // } else {
-        // const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
-        // return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
-        // }
-        // connection.release();
+        connection.release();
 
     }catch (err) {
         logger.error(`App - editAlarmActive Service error\n: ${err.message}`);
@@ -220,9 +213,37 @@ exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, 
         } else {
             return errResponse(baseResponse.DB_ERROR);
         }
+        connection.release();
 
     }catch (err) {
         logger.error(`App - editWritingLetter Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.editLetterInfo = async function (userIdx){
+
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+        const retriveFirstLetterInfo = await userDao.selectFirstLetterIdx(connection, userIdx)
+
+        const letterIdx = retriveFirstLetterInfo.idx
+        const posterIdx = retriveFirstLetterInfo.posterIdx
+
+        const updateIscheckedByFirstIdx = await userDao.updateLetterIschecked(connection,letterIdx)
+        const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
+        const retriveFirstLetterInfoByIdx = await userDao.selectLetterInfo(connection,letterIdx)
+
+        const posterurlValue = retrievePosterurl.movieImgUrlForLetter
+
+        retriveFirstLetterInfoByIdx.posterurl = posterurlValue   // 기존 객체에 새로운 객체 (key는 posterurl, value는 posterurlValue)
+
+        connection.release();
+
+        return response(baseResponse.SUCCESS, (retriveFirstLetterInfoByIdx));
+
+    }catch (err) {
+        logger.error(`App - editLetterInfo Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

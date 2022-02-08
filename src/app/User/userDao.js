@@ -313,6 +313,48 @@ async function selectCountIscheckedLetter(connection, userIdx) {
   return Object.values(ResultRow)[0]
 }
 
+async function selectFirstLetterIdx(connection, useridx){
+  const selectQuery = `
+  select idx, posterIdx
+  from Letter
+  where recipientIdx = ? and ischecked = false
+  order by createAt asc
+  limit 1;
+  `;
+  const selectResultRow =  await connection.query(selectQuery, useridx);
+
+  return selectResultRow[0][0]
+}
+
+async function updateLetterIschecked(connection, idx){
+  const updateQuery = `
+  UPDATE Letter
+  SET ischecked = TRUE
+  WHERE idx = '?';
+  `;
+  const updateResultRow = await connection.query(updateQuery, idx);
+}
+
+async function selectposterurl(connection, idx){
+  const selectQuery = `
+  SELECT movieImgUrlForLetter
+  FROM MovieProfileImg
+  WHERE idx = '?';
+  `;
+  const updateResultRow = await connection.query(selectQuery, idx);
+  return updateResultRow[0][0]
+}
+
+async function selectLetterInfo(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, movieTitle, contents, senderIdx, recipientIdx
+  FROM Letter
+  WHERE idx = '?';
+  `;
+  const selectResultRow = await connection.query(selectQuery, idx)
+  return selectResultRow[0][0]
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -342,4 +384,8 @@ module.exports = {
   insertPosterurl,
   insertLetterInfo,
   selectCountIscheckedLetter,
+  selectFirstLetterIdx,
+  updateLetterIschecked,
+  selectposterurl,
+  selectLetterInfo,
 };

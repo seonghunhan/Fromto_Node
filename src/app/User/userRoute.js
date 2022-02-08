@@ -62,8 +62,8 @@ module.exports = function(app){
     // 19. 안읽은 편지 유무 API (홈으로 들어갈때 안읽은 편지 유무 제공)
     app.get('/app/login/ischeckedLetter', jwtMiddleware, user.getischeckLetter);
 
-    // // 20. 안읽은 편지 클릭 API
-    // app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
+    // 20. 안읽은 편지 클릭 API
+    app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
 
 
 

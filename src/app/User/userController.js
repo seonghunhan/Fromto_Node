@@ -463,20 +463,20 @@ exports.settings = async function (req, res) {
     return res.send(checkLetterResult)
 }
 
-// /**
-//  * API No. 20
-//  * API Name : 안읽은 편지 클릭 API
-//  * [GET] /app/login/readingLetter
-//  */
+/**
+ * API No. 20
+ * API Name : 안읽은 편지 클릭 API
+ * [GET] /app/login/readingLetter
+ */
 
-//  exports.getLetterInfo = async function (req, res) {
+ exports.getLetterInfo = async function (req, res) {
 
-//     const userIdx = req.verifiedToken.userIdx;
+    const userIdx = req.verifiedToken.userIdx;
 
-//     const resultResponse = await userProvider.retrieveLetter(userIdx)
+    const resultResponse = await userService.editLetterInfo(userIdx)
 
-//     //return res.send(createLetterResult)
-// }
+    return res.send(resultResponse)
+}
 
 
 

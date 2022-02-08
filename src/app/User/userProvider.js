@@ -187,9 +187,3 @@ exports.retrieveIscheckedLetter = async function (userIdx) {
   }
 }
 
-// exports.retrieveLetter = async function (userIdx) {
-//   const connection = await pool.getConnection(async (conn) => conn);
-//   const userNicknameResult = await userDao.selectUserNicknameByIdx(connection, userIdx)
-//   connection.release();
-//   return userNicknameResult
-// }
