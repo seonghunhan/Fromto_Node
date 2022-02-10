@@ -40,6 +40,9 @@ module.exports = {
     USER_NICKNAME_EMPTY : { "isSuccess": false, "code": 2023, "message": "변경할 닉네임 값을 입력해주세요" },
     USER_STATUS_EMPTY : { "isSuccess": false, "code": 2024, "message": "회원 상태값을 입력해주세요" },
 
+    SENDING_DATA_EMPTY : { "isSuccess": false, "code": 2025, "message":"모든 정보를 입력해주세요." },
+    SENDING_POSTERDATA_EMPTY : { "isSuccess": false, "code": 2026, "message":"Posterurl을 입력해주세요." },
+
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"이미 계정이 존재합니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },

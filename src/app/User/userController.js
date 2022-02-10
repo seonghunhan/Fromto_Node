@@ -14,6 +14,56 @@ const { smtpTransport } = require("../../../config/email")
  * [GET] /app/test
  */
  exports.getTest = async function (req, res) {
+
+    var jumin1 = 931212 //주민등록번호 앞
+
+    var jumin2 = 1071317 //주민등록번호 뒤
+    
+    var curDateObj = new Date(); // 날짜 Object 생성
+    
+    var curDate = ""; // 현재년도일자
+
+    var curDate2 = ""; //현재 월일
+    
+    var tmpAge = 0; // 임시나이
+    
+    var curYear = 2022 //curDateObj.getYear(); // 현재년도
+    
+    var curMonth = 09 //curDateObj.getMonth() + 1; // 현재월
+    
+    if(curMonth < 10) curMonth = "0" + curMonth; // 현재 월이 10보다 작을경우 '0' 문자 합한다
+    
+    var curDay = 12//curDateObj.getDate(); // 현재일
+    
+    if(curDay < 10) curDay = "0" + curDay; // 현재 일이 10보다 작을경우 '0' 문자 합한다
+    
+    curDate = curYear + curMonth + curDay; // 20220912
+    curDate2 = curMonth + curDay;
+    console.log(curDate)
+    console.log(curDate2)
+        var genType = 1 //jumin2.substring(0, 1); // 주민번호 뒷자리 성별구분 문자 추출
+    
+    if(genType <= 2) {
+    
+        tmpAge = curYear - (1900 + 93) //parseInt(jumin1.substring(0, 2))); // 1, 2 일경우
+    
+    } else {
+    
+        tmpAge = curYear - (2000 + 12) //parseInt(jumin1.substring(0, 2))); // 그 외의 경우
+    
+    }
+    
+        var tmpBirthday = 1212 //umin1.substring(2, 6); // 주민번호 4자리 생일문자 추출
+    
+        if(curDate2 < (tmpBirthday)) {  // 20220912 < (20221212)
+    
+        tmpAge -= 1;
+    
+    }
+    
+    
+    console.log(tmpAge)
+
      return res.send(response(baseResponse.SUCCESS))
  }
 
@@ -441,9 +491,9 @@ exports.settings = async function (req, res) {
 
     const userIdx = req.verifiedToken.userIdx;
 
-    const {letterTitle, movieTitle, contents, recipientNickname, posterurl} = req.body;
+    const {letterTitle, movieTitle, contents, posterurl} = req.body;
 
-    const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, recipientNickname, posterurl)
+    const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, posterurl)
 
     return res.send(createLetterResult)
 }

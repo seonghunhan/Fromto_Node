@@ -272,6 +272,14 @@ async function selectUserNicknameByIdx(connection, userIdx) {
   return selectResultRow[0][0].nickname
 }
 
+async function selectUserIdxList(connection){
+  const selectQuery = `
+  SELECT idx
+  FROM UserInfo ;
+  `; 
+  const selectResultRow = await connection.query(selectQuery);
+  return selectResultRow[0]
+}
 async function insertPosterurl(connection, posterurl) {
   const insertQuery = `
   INSERT INTO MovieProfileImg (movieImgUrlForLetter)
@@ -281,21 +289,21 @@ async function insertPosterurl(connection, posterurl) {
   return insertResultRow[0].insertId
 }
 
-async function selectUseridxByNickname(connection, recipientNickname) {
-  const selectuserIdxQuery = `
-  SELECT idx
-  FROM UserInfo
-  WHERE nickname = ?;
-  `;
-  const selectResultRow = await connection.query(selectuserIdxQuery, recipientNickname);
+// async function selectUseridxByNickname(connection, recipientNickname) {
+//   const selectuserIdxQuery = `
+//   SELECT idx
+//   FROM UserInfo
+//   WHERE nickname = ?;
+//   `;
+//   const selectResultRow = await connection.query(selectuserIdxQuery, recipientNickname);
 
-  return selectResultRow[0][0]
-}
+//   return selectResultRow[0][0]
+// }
 
 async function insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx) {
   const insertQuery = `
-  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, recipientIdx, posterIdx)
-  VALUES (?,?,?,?,?,?);
+  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, posterIdx)
+  VALUES (?,?,?,?,?);
   `;
   const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx]);
   //return insertResultRow[0].insertId
@@ -352,6 +360,7 @@ async function selectLetterInfo(connection, idx){
   WHERE idx = '?';
   `;
   const selectResultRow = await connection.query(selectQuery, idx)
+
   return selectResultRow[0][0]
 }
 
@@ -380,7 +389,7 @@ module.exports = {
   selectSettingsParmes,
   updateAlarm,
   selectUserNicknameByIdx,
-  selectUseridxByNickname,
+  selectUserIdxList,
   insertPosterurl,
   insertLetterInfo,
   selectCountIscheckedLetter,

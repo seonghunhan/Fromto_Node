@@ -194,25 +194,42 @@ exports.editAlarmActive = async function (userIdx, alarm){
     }
 }
 
-exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, recipientNickname, posterurl){
+exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, posterurl){
 
     try{
         const senderIdx = userIdx
 
         const connection = await pool.getConnection(async (conn) => conn);
-        const poseterIdx = await userDao.insertPosterurl(connection, posterurl);
-        const selectUseridxByNicknameResult= await userDao.selectUseridxByNickname(connection, recipientNickname);
 
-        if (!selectUseridxByNicknameResult) {
-            return errResponse(baseResponse.USER_USERID_NOT_EXIST);;
-        } else if (selectUseridxByNicknameResult) {
-            const recipientIdx = selectUseridxByNicknameResult.idx
+        const useridxlist = await userDao.selectUserIdxList(connection);
+        const useridxlistLenth = useridxlist.length
 
-            const insertLetterInfoResult = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx ); 
-            return response(baseResponse.SUCCESS);
-        } else {
-            return errResponse(baseResponse.DB_ERROR);
+        const resultList = new Array();         // idx들만 추출해서 새로운 리스트 선언
+        for (var i = 0; i < useridxlistLenth; i++){
+            resultList.push(useridxlist[i].idx)
         }
+
+        for (var i = 0; i < resultList.length; i++){ // 리스트중에 보낸사람 idx 지우기위함
+            if(resultList[i] == senderIdx){
+                resultList.splice(i, 1);                  // splice(삭제인덱스, 갯수)
+                i--;
+            }
+        }
+         //Math.random() => 0~1사이 부동소수점 난수발생
+         //Math.floor : 소수점버리고 정수선언
+        const newNum = Math.floor(Math.random() * resultList.length); //무작위로 보내기 위하여 idx랜덤으로 한개추출               
+        const recipientIdx = resultList[newNum]
+        console.log(recipientIdx)
+
+        if (!letterTitle || !movieTitle || !contents) {
+            return errResponse(baseResponse.SENDING_DATA_EMPTY);
+        }else if (!posterurl){
+            return errResponse(baseResponse.SENDING_POSTERDATA_EMPTY);
+        }else {
+            const poseterIdx = await userDao.insertPosterurl(connection, posterurl);;
+            const insertLetterInfoResult = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, poseterIdx ); 
+            return response(baseResponse.SUCCESS);
+        } 
         connection.release();
 
     }catch (err) {
@@ -233,11 +250,20 @@ exports.editLetterInfo = async function (userIdx){
         const updateIscheckedByFirstIdx = await userDao.updateLetterIschecked(connection,letterIdx)
         const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
         const retriveFirstLetterInfoByIdx = await userDao.selectLetterInfo(connection,letterIdx)
-
+        
         const posterurlValue = retrievePosterurl.movieImgUrlForLetter
+        const senderIdx = retriveFirstLetterInfoByIdx.senderIdx
+        const recipientIdx = retriveFirstLetterInfoByIdx.recipientIdx
+
+        const SenderNickname = await userDao.selectUserNicknameByIdx(connection, senderIdx)
+        const RecipientNickname = await userDao.selectUserNicknameByIdx(connection, recipientIdx)
 
         retriveFirstLetterInfoByIdx.posterurl = posterurlValue   // 기존 객체에 새로운 객체 (key는 posterurl, value는 posterurlValue)
+        retriveFirstLetterInfoByIdx.senderNickname = SenderNickname
+        retriveFirstLetterInfoByIdx.recipientNickname = RecipientNickname
 
+        delete retriveFirstLetterInfoByIdx["senderIdx"];
+        delete retriveFirstLetterInfoByIdx["recipientIdx"];	
         connection.release();
 
         return response(baseResponse.SUCCESS, (retriveFirstLetterInfoByIdx));
