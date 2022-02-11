@@ -10,6 +10,7 @@ const { smtpTransport } = require("../../../config/email")
 
 const { pool } = require("../../../config/database");
 const userDao = require("./userDao");
+const { type } = require("os");
 /**
  * API No. 0
  * API Name : 테스트 API
@@ -17,33 +18,12 @@ const userDao = require("./userDao");
  */
  exports.getTest = async function (req, res) {
 
-    const connection = await pool.getConnection(async (conn) => conn);
 
-    const useridxlist = await userDao.selectUserIdxList(connection);
-    const useridxlistLenth = useridxlist.length
-    const preferGender = 1
-    const preferAge = 1
-    // 자기를 제외한 인덱스 추출
-    const resultList = new Array();         // idx들만 추출해서 새로운 리스트 선언
-    for (var i = 0; i < useridxlistLenth; i++){
-        resultList.push(useridxlist[i].idx)
+    var list = []
+    console.log(typeof(list))
+    if(list.length < 1){
+        console.log("널")
     }
-    
-    if(preferAge == 0 && preferGender == 0 ){
-        const useridxlist1 = await userDao.selectUserIdxList(connection);
-        console.log("1번작동")
-    }else if (preferGender == 0 ){
-        const useridxlist2 = await userDao.selectUserIdxListByFilter2(connection, preferAge);
-        console.log("2번작동")
-    }else if (preferAge == 0){
-        const useridxlist3 = await userDao.selectUserIdxListByFilter1(connection, preferGender);
-        console.log("3번작동")
-    }else {
-        const useridxlist3 = await userDao.selectUserIdxListByFilter3(connection, preferGender, preferAge);
-        console.log("4번작동")
-    }
-
-    connection.release();
     return res.send(response(baseResponse.SUCCESS))
  }
 

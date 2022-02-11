@@ -296,29 +296,30 @@ async function selectUserIdxListByFilter1(connection, preferGender){
   const selectQuery = `
   SELECT idx
   FROM UserInfo
-  WHERE gender = ?;
+  WHERE gender = ?
   `; 
   const selectResultRow = await connection.query(selectQuery, preferGender);
   return selectResultRow[0]
 }
 
-async function selectUserIdxListByFilter2(connection, preferAge){
+async function selectUserIdxListByFilter2(connection, preferAge, preferAge2){
   const selectQuery = `
   SELECT idx
   FROM UserInfo
-  WHERE gender = ?;
+  WHERE age >= ? and age < ?;
   `; 
-  const selectResultRow = await connection.query(selectQuery, preferAge);
+  const selectResultRow = await connection.query(selectQuery, [preferAge, preferAge2]);
   return selectResultRow[0]
 }
 
-async function selectUserIdxListByFilter3(connection, preferGender, preferAge){
+async function selectUserIdxListByFilter3(connection, resultList, preferGender, preferAge, preferAge2){
   const selectQuery = `
   SELECT idx
   FROM UserInfo
-  WHERE gender = ? AND age = ?
+  WHERE idx in (?) and gender = ? and age >= ? and age < ?;
   `; 
-  const selectResultRow = await connection.query(selectQuery, [preferGender, preferAge]);
+  const selectResultRow = await connection.query(selectQuery, [resultList, preferGender, preferAge, preferAge2]);
+  console.log( [resultList, preferGender, preferAge, preferAge2])
   return selectResultRow[0]
 }
 
@@ -344,8 +345,8 @@ async function insertPosterurl(connection, posterurl) {
 
 async function insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx) {
   const insertQuery = `
-  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, posterIdx)
-  VALUES (?,?,?,?,?);
+  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, recipientIdx, posterIdx)
+  VALUES (?,?,?,?,?,?);
   `;
   const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx]);
   //return insertResultRow[0].insertId
