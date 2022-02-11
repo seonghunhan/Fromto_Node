@@ -51,8 +51,8 @@ async function selectUser(connection) {
 // 유저 생성
 async function insertUserInfo(connection, insertUserInfoParams) {
   const insertUserInfoQuery = `
-        INSERT INTO UserInfo(id, password, nickname, birth, gender)
-        VALUES (?, ?, ?, ?, ?);
+        INSERT INTO UserInfo(id, password, nickname, birth, gender, age)
+        VALUES (?, ?, ?, ?, ?, ?);
     `;
   const insertUserInfoRow = await connection.query(
     insertUserInfoQuery,
@@ -60,6 +60,17 @@ async function insertUserInfo(connection, insertUserInfoParams) {
   );
 
   return insertUserInfoRow;
+}
+
+async function selectUserAge(connection){
+  const selectQuery = `
+  SELECT birth, gender
+  FROM UserInfo
+  WHERE idx = '13';
+  `;
+  const selectResultRow = await connection.query(selectQuery)
+
+  return(selectResultRow[0][0])
 }
 
 // 패스워드 체크
@@ -280,6 +291,37 @@ async function selectUserIdxList(connection){
   const selectResultRow = await connection.query(selectQuery);
   return selectResultRow[0]
 }
+
+async function selectUserIdxListByFilter1(connection, preferGender){
+  const selectQuery = `
+  SELECT idx
+  FROM UserInfo
+  WHERE gender = ?;
+  `; 
+  const selectResultRow = await connection.query(selectQuery, preferGender);
+  return selectResultRow[0]
+}
+
+async function selectUserIdxListByFilter2(connection, preferAge){
+  const selectQuery = `
+  SELECT idx
+  FROM UserInfo
+  WHERE gender = ?;
+  `; 
+  const selectResultRow = await connection.query(selectQuery, preferAge);
+  return selectResultRow[0]
+}
+
+async function selectUserIdxListByFilter3(connection, preferGender, preferAge){
+  const selectQuery = `
+  SELECT idx
+  FROM UserInfo
+  WHERE gender = ? AND age = ?
+  `; 
+  const selectResultRow = await connection.query(selectQuery, [preferGender, preferAge]);
+  return selectResultRow[0]
+}
+
 async function insertPosterurl(connection, posterurl) {
   const insertQuery = `
   INSERT INTO MovieProfileImg (movieImgUrlForLetter)
@@ -369,6 +411,7 @@ module.exports = {
   selectUserId,
   selectUserNickname,
   selectUserId,
+  selectUserAge,
   insertUserInfo,
   selectUserPassword,
   selectUserAccount,
@@ -390,6 +433,9 @@ module.exports = {
   updateAlarm,
   selectUserNicknameByIdx,
   selectUserIdxList,
+  selectUserIdxListByFilter1,
+  selectUserIdxListByFilter2,
+  selectUserIdxListByFilter3,
   insertPosterurl,
   insertLetterInfo,
   selectCountIscheckedLetter,

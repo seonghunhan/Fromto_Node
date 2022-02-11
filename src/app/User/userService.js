@@ -30,9 +30,36 @@ exports.createUser = async function (id, password, nickname, birth, gender) {
             .createHash("sha512")
             .update(password)
             .digest("hex");
+        
+        // 주민번호를 이용하여 나이추출
+
+        //const jumin1 = selectUserAgeResult.birth
+        //const gender = selectUserAgeResult.gender
+          
+        const curDateObj = new Date(); // 날짜 Object 생성
+        
+        let tmpAge = 0; // 임시나이
+        
+        const curYear = curDateObj.getFullYear(); // 현재년도
+        
+        let curMonth = curDateObj.getMonth() + 1; // 현재월
+        
+        if(curMonth < 10) curMonth = "0" + curMonth; // 현재 월이 10보다 작을경우 '0' 문자 합한다
+        
+        let curDay = curDateObj.getDate(); // 현재일
+        
+        if(curDay < 10) curDay = "0" + curDay; // 현재 일이 10보다 작을경우 '0' 문자 합한다
+        
+        if(gender <= 2) {
+            tmpAge = curYear - ( 1900 + parseInt(birth.substring(0, 2))) + 1 ;// 1, 2 일경우
+                                    // paserInt 문자열을 파싱하여 정수형으로 반환
+        } else {
+            tmpAge = curYear - (2000 + parseInt(birth.substring(0, 2))) + 1 ;// 3, 4 일경우
+        }    
+
 
         // 쿼리문에 사용할 변수 값을 배열 형태로 전달
-        const insertUserInfoParams = [id, hashedPassword, nickname, birth, gender];
+        const insertUserInfoParams = [id, hashedPassword, nickname, birth, gender, tmpAge];
 
         const connection = await pool.getConnection(async (conn) => conn);
 
@@ -194,7 +221,7 @@ exports.editAlarmActive = async function (userIdx, alarm){
     }
 }
 
-exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, posterurl){
+exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, posterurl, preferAge, preferGender){
 
     try{
         const senderIdx = userIdx
@@ -204,17 +231,22 @@ exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, 
         const useridxlist = await userDao.selectUserIdxList(connection);
         const useridxlistLenth = useridxlist.length
 
-        const resultList = new Array();         // idx들만 추출해서 새로운 리스트 선언
+        // userInfo 테이블에서 인덱스만 추출
+        const resultList = new Array();  
         for (var i = 0; i < useridxlistLenth; i++){
             resultList.push(useridxlist[i].idx)
         }
-
-        for (var i = 0; i < resultList.length; i++){ // 리스트중에 보낸사람 idx 지우기위함
+        // 새로 추출한 리스트에서 자기 인덱스 제거
+        for (var i = 0; i < resultList.length; i++){ 
             if(resultList[i] == senderIdx){
-                resultList.splice(i, 1);                  // splice(삭제인덱스, 갯수)
+                resultList.splice(i, 1);  // splice(삭제인덱스, 갯수)
                 i--;
             }
         }
+        
+
+
+        //최종 수신자 뽑기
          //Math.random() => 0~1사이 부동소수점 난수발생
          //Math.floor : 소수점버리고 정수선언
         const newNum = Math.floor(Math.random() * resultList.length); //무작위로 보내기 위하여 idx랜덤으로 한개추출               
