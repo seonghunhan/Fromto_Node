@@ -19,6 +19,14 @@ exports.CheckUserById = async function (userId) {
     return userResult; 
   };
 
+exports.deleteAccountByIdx = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const deleteResult = await userDao.deleteAccount(connection, userIdx);
+  connection.release();
+  console.log(deleteResult)
+  return deleteResult
+}
+
 exports.CheckUserByNickname = async function (nickname) {
   const connection = await pool.getConnection(async (conn) => conn);
   const userResult = await userDao.selectUserNickname(connection, nickname);
@@ -187,3 +195,8 @@ exports.retrieveIscheckedLetter = async function (userIdx) {
   }
 }
 
+exports.retrieveLetterList = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const LetterListResult = await userDao.selectLetterList(connection, userIdx)
+  connection.release();
+}

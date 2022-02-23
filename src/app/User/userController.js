@@ -19,12 +19,26 @@ const { type } = require("os");
  exports.getTest = async function (req, res) {
 
 
-    var list = []
-    console.log(typeof(list))
-    if(list.length < 1){
-        console.log("널")
-    }
-    return res.send(response(baseResponse.SUCCESS))
+    const connection = await pool.getConnection(async (conn) => conn);
+    const LetterListResult = await userDao.selectReplyLetterInfo(connection, 13)
+
+    const letterTitle = LetterListResult[0][0].letterTitle
+    const movieTitle = LetterListResult[0][0].movieTitle
+    const recipientIdx = LetterListResult[0][0].senderIdx
+    const posterIdx = LetterListResult[0][0].posterIdx
+    const contents = "테스트트트트트입니다"
+
+    const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
+    const posterurl = retrievePosterurl.movieImgUrlForLetter
+
+    console.log(letterTitle,movieTitle , recipientIdx, posterurl)
+
+    const editReplyLetter = await userDao.insertReplyLetterInfo(connection, letterTitle, movieTitle, contents,recipientIdx, 13, posterIdx) 
+
+    connection.release();
+
+
+
  }
 
 /**
@@ -97,6 +111,23 @@ exports.checkInfoById = async function (req, res) {
     // }
 
 };
+
+/**
+ * API No. 2.5
+ * API Name : 계정 삭제 API
+ * [GET] /app/users/deleteUsers
+ */
+ exports.deleteAccount = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const deleteResult = await userProvider.deleteAccountByIdx(userIdx);
+
+    if(deleteResult){
+        return res.send(response(baseResponse.SUCCESS))
+    }
+
+ }
 
 /**
  * API No. 3
@@ -488,7 +519,41 @@ exports.settings = async function (req, res) {
     return res.send(resultResponse)
 }
 
+/**
+ * API No. 21
+ * API Name : 편지 회신 API
+ * [POST] /app/login/readingLetter/replyToLetter
+ */
 
+
+ exports.postReplyInfo = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const {replyContents} = req.body;
+
+    const ResultResponse = await userService.createReplyLetter(userIdx, replyContents)
+
+    return res.send(ResultResponse);
+}
+
+
+
+
+/**
+ * API No. 22
+ * API Name : 내가 쓴 영화 API (22번UI) 
+ * [GET] /app/login/mypage/readingMyMovie
+ */
+
+ exports.getMovieLetterList = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const resultResponse = await userProvider.retrieveLetterList(userIdx)
+
+    //return res.send(resultResponse)
+}
 
 
 
@@ -526,12 +591,6 @@ exports.patchUsers = async function (req, res) {
         return res.send(editUserInfo);
     }
 };
-
-
-
-
-
-
 
  /**
  * API No. 11

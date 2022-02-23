@@ -11,6 +11,9 @@ module.exports = function(app){
     // 2. 아이디 중복 체크 API
     app.get('/app/users/idcheck/:id', user.checkInfoById);
 
+    // 2.5 계정 삭제 API
+    app.get('/app/users/deleteAccount', jwtMiddleware, user.deleteAccount )
+
     // 3. 닉네임 중복 체크 API
     app.get('/app/users/nicknamecheck/:nickname', user.checkInfoByNickname);
 
@@ -64,6 +67,13 @@ module.exports = function(app){
 
     // 20. 안읽은 편지 클릭 API
     app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
+
+    // 21. 편지 회신 API (Letter테이블에서 ischecked가 가장 최근에 true로 바뀌는것 이용)
+    app.post('/app/login/readingLetter/replyToLetter', jwtMiddleware, user.postReplyInfo )
+
+    // 22. 내가 쓴 영화 API (22번UI) 
+    app.get('/app/login/mypage/readingMyMovie', jwtMiddleware, user.getMovieLetterList)
+    
 
 
 

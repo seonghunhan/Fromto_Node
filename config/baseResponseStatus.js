@@ -43,6 +43,7 @@ module.exports = {
     SENDING_DATA_EMPTY : { "isSuccess": false, "code": 2025, "message":"모든 정보를 입력해주세요." },
     SENDING_POSTERDATA_EMPTY : { "isSuccess": false, "code": 2026, "message":"Posterurl을 입력해주세요." },
     SENDING_RECIPIENT_NOT_EXIST : { "isSuccess": false, "code": 2027, "message":"필터에 맞는 수신자가 DB에 존재하지 않습니다." },
+    RESENDING_CONTENTS_NOT_EXIST : { "isSuccess": false, "code": 2028, "message":"내용을 입력해 주세요." },
 
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"이미 계정이 존재합니다." },

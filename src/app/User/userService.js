@@ -206,9 +206,9 @@ exports.editAlarmActive = async function (userIdx, alarm){
         const updateAlarm= await userDao.updateAlarm(connection, userIdx, alarm);
     
         if (alarm == true && updateAlarm) {
-            return response(baseResponse.SUCCESS, {'Alarm기능을 활성화 시켰습니다' : alarm});
+            return response(baseResponse.SUCCESS, {'Alarm Status' : alarm});
         } else if (alarm == false && updateAlarm){
-            return response(baseResponse.SUCCESS2, {'Alarm기능을 비활성화 시켰습니다' : alarm});
+            return response(baseResponse.SUCCESS2, {'Alarm Status' : alarm});
         } else {
             return errResponse(baseResponse.DB_ERROR);
         }
@@ -224,81 +224,83 @@ exports.editAlarmActive = async function (userIdx, alarm){
 exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, posterurl, preferAge, preferGender){
 
     try{
-        const senderIdx = userIdx
 
-        const connection = await pool.getConnection(async (conn) => conn);
-
-        const useridxlist = await userDao.selectUserIdxList(connection);
-        const useridxlistLenth = useridxlist.length
-    
-        // userInfo 테이블에서 인덱스만 추출
-        const resultList = new Array();  
-        for (var i = 0; i < useridxlistLenth; i++){
-            resultList.push(useridxlist[i].idx)
-        }
-        console.log("전체 idx : " + resultList)
-        // 새로 추출한 리스트에서 자기 인덱스 제거
-        for (var i = 0; i < resultList.length; i++){ 
-            if(resultList[i] == senderIdx){
-                resultList.splice(i, 1);  // splice(삭제인덱스, 갯수)
-                i--;
-            }
-        }
-        console.log("자기 인덱스 제외한 idx : " + resultList)
-        const preferGender1 = preferGender
-        const preferAge1 = preferAge
-        const preferAge2 = parseInt(preferAge) + 10
-    
-        const resultListByPrefer = new Array();
-        
-        if(preferAge1 == 0 && preferGender1 == 0 ){
-            console.log("1번작동")
-            resultListByPrefer.push(resultList)
-        }else if (preferGender1 == 0 ){
-            const useridxlist2 = await userDao.selectUserIdxListByFilter2(connection, preferAge1, preferAge2 );
-            console.log("2번작동")
-            resultListByPrefer.push(useridxlist2)
-        }else if (preferAge1 == 0){
-            const useridxlist3 = await userDao.selectUserIdxListByFilter1(connection, preferGender1);
-            console.log("3번작동")
-            resultListByPrefer.push(useridxlist3)
-        }else {
-            const useridxlist4 = await userDao.selectUserIdxListByFilter3(connection, resultList, preferGender1, preferAge1, preferAge2);
-            console.log("4번작동")
-            resultListByPrefer.push(useridxlist4)
-        }
-    
-        const result = resultListByPrefer[0]
-    
-        const FinalResultList = new Array();
-        const FinalResultListLength = result.length
-    
-        for (var i = 0; i < FinalResultListLength; i++){
-            FinalResultList.push(result[i].idx)
-        }
-    
-        console.log("성별,나이 필터링한 idx : " + FinalResultList)
-        
-        if (FinalResultList < 1) {
-            return errResponse(baseResponse.SENDING_RECIPIENT_NOT_EXIST);
-        } else {
-        //최종 수신자 뽑기
-         //Math.random() => 0~1사이 부동소수점 난수발생
-         //Math.floor : 소수점버리고 정수선언
-        const newNum = Math.floor(Math.random() * FinalResultList.length); //무작위로 보내기 위하여 idx랜덤으로 한개추출               
-        var recipientIdx = FinalResultList[newNum]
-        console.log("랜덤으로 선택받은 최종 수신자 : " + recipientIdx)
-        }
         if (!letterTitle || !movieTitle || !contents) {
             return errResponse(baseResponse.SENDING_DATA_EMPTY);
         }else if (!posterurl){
             return errResponse(baseResponse.SENDING_POSTERDATA_EMPTY);
-        }else {
+        }else{
+            const senderIdx = userIdx
+
+            const connection = await pool.getConnection(async (conn) => conn);
+
+            const useridxlist = await userDao.selectUserIdxList(connection);
+            const useridxlistLenth = useridxlist.length
+        
+            // userInfo 테이블에서 인덱스만 추출
+            const resultList = new Array();  
+            for (var i = 0; i < useridxlistLenth; i++){
+                resultList.push(useridxlist[i].idx)
+            }
+            console.log("전체 idx : " + resultList)
+            // 새로 추출한 리스트에서 자기 인덱스 제거
+            for (var i = 0; i < resultList.length; i++){ 
+                if(resultList[i] == senderIdx){
+                    resultList.splice(i, 1);  // splice(삭제인덱스, 갯수)
+                    i--;
+                }
+            }
+            console.log("자기 인덱스 제외한 idx : " + resultList)
+            const preferGender1 = preferGender
+            const preferAge1 = preferAge
+            const preferAge2 = parseInt(preferAge) + 10
+        
+            const resultListByPrefer = new Array();
+            // 필터가 0번(상관없음)일경우 4가지 경우의 수
+            if(preferAge1 == 0 && preferGender1 == 0 ){
+                console.log("1번작동")
+                resultListByPrefer.push(resultList)
+            }else if (preferGender1 == 0 ){
+                const useridxlist2 = await userDao.selectUserIdxListByFilter2(connection, preferAge1, preferAge2 );
+                console.log("2번작동")
+                resultListByPrefer.push(useridxlist2)
+            }else if (preferAge1 == 0){
+                const useridxlist3 = await userDao.selectUserIdxListByFilter1(connection, preferGender1);
+                console.log("3번작동")
+                resultListByPrefer.push(useridxlist3)
+            }else {
+                const useridxlist4 = await userDao.selectUserIdxListByFilter3(connection, resultList, preferGender1, preferAge1, preferAge2);
+                console.log("4번작동")
+                resultListByPrefer.push(useridxlist4)
+            }
+    
+            const result = resultListByPrefer[0]
+        
+            const FinalResultList = new Array();
+            const FinalResultListLength = result.length
+    
+            for (var i = 0; i < FinalResultListLength; i++){
+                FinalResultList.push(result[i].idx)
+            }
+        
+            console.log("성별,나이 필터링한 idx : " + FinalResultList)
+        
+            if (FinalResultList < 1) {
+                return errResponse(baseResponse.SENDING_RECIPIENT_NOT_EXIST);
+            } else {
+            //최종 수신자 뽑기
+            //Math.random() => 0~1사이 부동소수점 난수발생
+            //Math.floor : 소수점버리고 정수선언
+            const newNum = Math.floor(Math.random() * FinalResultList.length); //무작위로 보내기 위하여 idx랜덤으로 한개추출               
+            var recipientIdx = FinalResultList[newNum]
+            console.log("랜덤으로 선택받은 최종 수신자 : " + recipientIdx)
+            }
+        
             const poseterIdx = await userDao.insertPosterurl(connection, posterurl);;
             console.log("여기까지는 왔는데" + recipientIdx)
             const insertLetterInfoResult = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx ); 
             return response(baseResponse.SUCCESS);
-        } 
+            }
         connection.release();
 
     }catch (err) {
@@ -339,6 +341,43 @@ exports.editLetterInfo = async function (userIdx){
 
     }catch (err) {
         logger.error(`App - editLetterInfo Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.createReplyLetter = async function (userIdx, Contents){
+
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+        const LetterListResult = await userDao.selectReplyLetterInfo(connection, userIdx)
+    
+        const letterTitle = LetterListResult[0][0].letterTitle
+        const movieTitle = LetterListResult[0][0].movieTitle
+        const recipientIdx = LetterListResult[0][0].senderIdx
+        const posterIdx = LetterListResult[0][0].posterIdx
+        const senderIdx = userIdx
+        const senderNickname = await userDao.selectUserNicknameByIdx(connection, senderIdx)
+        const recipientNickname = await userDao.selectUserNicknameByIdx(connection, recipientIdx)
+    
+        const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
+        const posterurl = retrievePosterurl.movieImgUrlForLetter
+    
+        console.log("테이블에 추가된 레코드 : " + letterTitle, movieTitle, Contents, recipientIdx, senderIdx, posterIdx)
+    
+        if (!Contents) {
+            return errResponse(baseResponse.RESENDING_CONTENTS_NOT_EXIST);
+        } else{
+            const editReplyLetter = await userDao.insertLetterInfo(connection, letterTitle, movieTitle, Contents, senderIdx, recipientIdx, posterIdx) 
+            return response(baseResponse.SUCCESS, {'SenderNickname' : senderNickname, 'recipientNickname' : recipientNickname} )
+        }
+        
+        connection.release();
+    
+    
+
+
+    }catch (err) {
+        logger.error(`App - createReplyLetter Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

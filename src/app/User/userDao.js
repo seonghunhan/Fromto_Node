@@ -14,6 +14,15 @@ async function selectUserId(connection, userId) {
     return userRow;
   }
 
+async function deleteAccount(connection, userIdx) {
+  const deleteAccountQuery = `
+  DELETE FROM UserInfo
+  WHERE idx = ?;
+  `
+  const resultRow = await connection.query(deleteAccountQuery, userIdx);
+  return resultRow
+}
+
 // nickname로 계정 중복체크
 async function selectUserNickname(connection, nickname) {
 
@@ -407,9 +416,43 @@ async function selectLetterInfo(connection, idx){
   return selectResultRow[0][0]
 }
 
+async function selectLetterList(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, movieTitle, contents, senderIdx, recipientIdx
+  FROM Letter
+  WHERE idx = '?';
+  `;
+  const selectResultRow = await connection.query(selectQuery, idx)
+
+  return selectResultRow[0][0]
+}
+
+async function selectReplyLetterInfo(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, movieTitle, senderIdx, posterIdx
+  FROM Letter
+  WHERE recipientIdx = '?'
+  order by updatedAt desc
+  limit 1;
+  `
+  const selectResultRow = await connection.query(selectQuery, idx)
+  return selectResultRow
+}
+
+async function insertReplyLetterInfo(connection, letterTitle, movieTitle, contents, recipientIdx, senderIdx, posterIdx){
+  const insertQuery = `
+  INSERT INTO FromTo.ReplyLetter (letterTitle, movieTitle, contents, recipientIdx, senderIdx, posterIdx)
+  VALUES (?, ?, ?, ?, ?, ?)
+  `
+  const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, recipientIdx, senderIdx, posterIdx])
+  console.log(insertResultRow)
+}
+
+
 module.exports = {
   selectUser,
   selectUserId,
+  deleteAccount,
   selectUserNickname,
   selectUserId,
   selectUserAge,
@@ -444,4 +487,7 @@ module.exports = {
   updateLetterIschecked,
   selectposterurl,
   selectLetterInfo,
+  selectLetterList,
+  selectReplyLetterInfo,
+  insertReplyLetterInfo,
 };
