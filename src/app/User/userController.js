@@ -550,7 +550,7 @@ exports.settings = async function (req, res) {
 
     const userIdx = req.verifiedToken.userIdx;
 
-    const resultResponse = await userProvider.retrieveLetterList(userIdx)
+    const resultResponse = await userProvider.retrieveMovieLetterList(userIdx)
 
     //return res.send(resultResponse)
 }

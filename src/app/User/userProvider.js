@@ -195,8 +195,63 @@ exports.retrieveIscheckedLetter = async function (userIdx) {
   }
 }
 
-exports.retrieveLetterList = async function (userIdx) {
+exports.retrieveMovieLetterList = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const LetterListResult = await userDao.selectLetterList(connection, userIdx)
+  const LetterListResult = await userDao.selectMovieLetterListByIdx(connection, userIdx)
+
+  console.log(LetterListResult[0].posterIdx)
+  console.log(LetterListResult.length)
+
+  const posterIdxList = []
+  
+  //리스트에서 posterIdx만 추출해서 새list에 넣기
+  for (var i = 0; i < LetterListResult.length; i++){  
+    posterIdxList.push(LetterListResult[i].posterIdx)
+  }
+
+  // 리스트에서 중복 제거
+  const newPosterIdxList = []
+  posterIdxList.forEach((element) => {
+    if (!newPosterIdxList.includes(element)){
+      newPosterIdxList.push(element);
+    }
+  })
+
+  const retrieveLetterListByPosterIdx = []
+  for (var i = 0; i < newPosterIdxList.length; i++){
+    // console.log(await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i]))
+    var temp = await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i])
+    console.log(temp)
+    //retrieveLetterListByPosterIdx.push(temp)
+    //console.log(retrieveLetterListByPosterIdx.push(await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i])))
+  }
+
+ console.log("여기다" + retrieveLetterListByPosterIdx)
+
+
+
+
+  
+
   connection.release();
+
+  // console.log(LetterListResult[3].posterIdx)  => 65
+
+  // const newArr = new Array(LetterListResult.length); //2차원 배열로 재배열
+
+  // for (var i = 0; i < newArr.length; i++) {   
+  //   newArr[i] = new Array(LetterListResult[i]);
+  // }
+  // console.log(newArr[1][0].letterTitle)
+  // console.log(newArr)
+
+  // const finalArr = new Array(LetterListResult.length)
+  // for (var i = 0; i < finalArr.length; i++) {   
+  //   finalArr[i] = new Array(newArr[i][0]);
+  //   console.log(i+1)
+
+
+
+
+ // }
 }

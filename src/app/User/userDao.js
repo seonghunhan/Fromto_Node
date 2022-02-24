@@ -416,17 +416,6 @@ async function selectLetterInfo(connection, idx){
   return selectResultRow[0][0]
 }
 
-async function selectLetterList(connection, idx){
-  const selectQuery = `
-  SELECT letterTitle, movieTitle, contents, senderIdx, recipientIdx
-  FROM Letter
-  WHERE idx = '?';
-  `;
-  const selectResultRow = await connection.query(selectQuery, idx)
-
-  return selectResultRow[0][0]
-}
-
 async function selectReplyLetterInfo(connection, idx){
   const selectQuery = `
   SELECT letterTitle, movieTitle, senderIdx, posterIdx
@@ -448,7 +437,28 @@ async function insertReplyLetterInfo(connection, letterTitle, movieTitle, conten
   console.log(insertResultRow)
 }
 
+async function selectMovieLetterListByIdx(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, posterIdx
+  FROM Letter
+  WHERE senderIdx = '?' OR recipientIdx = '?'
+  ORDER BY posterIdx
+  `;
+  const selectResultRow = await connection.query(selectQuery, [idx, idx])
 
+  //console.log(selectResultRow[0][0].posterIdx)
+  return selectResultRow[0]
+}
+
+async function selectLetterListByPosterIdx(connection, posterIdx){
+  const selectQuery = `
+  select Letter.letterTitle, MovieProfileImg.movieImgUrlForLetter
+  from Letter inner join MovieProfileImg on Letter.posterIdx = MovieProfileImg.idx
+  where Letter.posterIdx = '?' ;
+  `; 
+  const selectResultRow = await connection.query(selectQuery, posterIdx);
+  return selectResultRow[0]
+}
 module.exports = {
   selectUser,
   selectUserId,
@@ -487,7 +497,8 @@ module.exports = {
   updateLetterIschecked,
   selectposterurl,
   selectLetterInfo,
-  selectLetterList,
   selectReplyLetterInfo,
   insertReplyLetterInfo,
+  selectMovieLetterListByIdx,
+  selectLetterListByPosterIdx,
 };
