@@ -282,3 +282,23 @@ exports.retrieveLetterList = async function (userIdx) {
 
 }
 
+// 31번 UI
+// 아직 확인 안한거라면 새로운 편지인것 표시(ischecked사용)
+// 그게 아니라면 
+// 보낸사람, 받은사람, 날짜, 컨텐츠 표기
+
+
+exports.retrieveChatList = async function (userIdx, posterIdx) {
+  const connection = await pool.getConnection(async (conn) => conn );
+  
+  const retrieveChatListResult = await userDao.selectchatLetterByposterIdx(connection, posterIdx)
+
+  for (var i = 0; i < retrieveChatListResult.length; i++){
+    var tempRecipientNickname = await userDao.selectUserNicknameByIdx(connection, retrieveChatListResult[i].recipientIdx)
+    var tempSenderNickname = await userDao.selectUserNicknameByIdx(connection, retrieveChatListResult[i].senderIdx)
+    console.log(retrieveChatListResult[i])
+//retrieveChatListResult[i].push(tempSenderNickname)
+  }
+  console.log(retrieveChatListResult)
+  connection.release();
+}

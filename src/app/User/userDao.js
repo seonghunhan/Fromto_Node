@@ -281,14 +281,15 @@ async function updateAlarm(connection, userIdx, alarm){
 }
 
 async function selectUserNicknameByIdx(connection, userIdx) {
+
   const selectuserNicknameQuery = `
   SELECT nickname
   FROM UserInfo
   WHERE idx = ?;
   `;
   const selectResultRow = await connection.query(selectuserNicknameQuery, userIdx);
-  //console.log(selectResultRow[0][0].nickname)
-
+  console.log(selectResultRow[0][0].nickname)
+  
   return selectResultRow[0][0].nickname
 }
 
@@ -551,6 +552,16 @@ async function selectLetterListByPosterIdxForLetterBox(connection, posterIdx){
   return selectResultRow[0]
 }
 
+async function selectchatLetterByposterIdx(connection, posterIdx){
+  const selectQuery = `
+  SELECT senderIdx, recipientIdx, date_format(createAt, '%Y.%m.%d') as date, contents, ischecked
+  FROM Letter
+  WHERE posterIdx = ?; 
+  `;
+  const selectResultRow = await connection.query(selectQuery, posterIdx)
+  return selectResultRow[0]
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -601,4 +612,5 @@ module.exports = {
   deletePreferData,
   selectLetterListByIdx,
   selectLetterListByPosterIdxForLetterBox,
+  selectchatLetterByposterIdx,
 };

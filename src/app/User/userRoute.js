@@ -83,8 +83,10 @@ module.exports = function(app){
 
     // 23. 편지함 API (30번 UI)
     app.get('/app/login/mypage/letterbox', jwtMiddleware, user.getLetterList)
-    
 
+    // 24. 채팅 편지함 API (31번 UI)
+    app.get('/app/login/mypage/letterbox/chatbox/:posterIdx', jwtMiddleware, user.postChatBox)
+    
 
 
 

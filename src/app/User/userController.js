@@ -584,6 +584,25 @@ exports.settings = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
 }
 
+/**
+ * API No. 24
+ * API Name : 채팅 편지함 API (31번 UI)
+ * [GET] /app/login/mypage/letterbox/chatbox/:posterIdx
+ */
+
+/**
+ * Path Variable: posterIdx 
+ */
+
+ exports.postChatBox = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+    const posterIdx = req.params.posterIdx;
+
+    const resultResponse = await userProvider.retrieveChatList(userIdx, posterIdx)
+
+    //return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
+}
 
   
 
