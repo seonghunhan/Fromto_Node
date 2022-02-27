@@ -569,6 +569,21 @@ exports.settings = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
 }
 
+/**
+ * API No. 23
+ * API Name : 편지함 API (30번 UI)
+ * [GET] /app/login/mypage/letterbox
+ */
+
+ exports.getLetterList = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const resultResponse = await userProvider.retrieveLetterList(userIdx)
+
+    return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
+}
+
 
   
 

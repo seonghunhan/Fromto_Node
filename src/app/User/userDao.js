@@ -452,7 +452,7 @@ async function selectMovieLetterListByIdx(connection, idx){
 
 async function selectLetterListByPosterIdx(connection, posterIdx){
   const selectQuery = `
-  select Letter.letterTitle, MovieProfileImg.movieImgUrlForLetter
+  select Letter.letterTitle, Letter.posterIdx, MovieProfileImg.movieImgUrlForLetter
   from Letter inner join MovieProfileImg on Letter.posterIdx = MovieProfileImg.idx
   where Letter.posterIdx = '?' ;
   `; 
@@ -527,6 +527,30 @@ async function deletePreferData(connection, senderIdx){
   return deleteCode;
 }
 
+async function selectLetterListByIdx(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, movieTitle, senderIdx, posterIdx
+  FROM Letter
+  WHERE senderIdx = '?' OR recipientIdx = '?'
+  ORDER BY posterIdx
+  `;
+  const selectResultRow = await connection.query(selectQuery, [idx, idx])
+
+  //console.log(selectResultRow[0][0].posterIdx)
+  return selectResultRow[0]
+}
+
+async function selectLetterListByPosterIdxForLetterBox(connection, posterIdx){
+  const selectQuery = `
+  select Letter.letterTitle, Letter.posterIdx, Letter.movieTitle, MovieProfileImg.movieImgUrlForLetter, UserInfo.nickname
+  from Letter inner join MovieProfileImg on Letter.posterIdx = MovieProfileImg.idx
+  inner join UserInfo on Letter.senderIdx = UserInfo.idx
+  where Letter.posterIdx = ? ;
+  `; 
+  const selectResultRow = await connection.query(selectQuery, posterIdx);
+  return selectResultRow[0]
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -575,4 +599,6 @@ module.exports = {
   selectPreferInfo,
   updateResendingLetter,
   deletePreferData,
+  selectLetterListByIdx,
+  selectLetterListByPosterIdxForLetterBox,
 };

@@ -80,6 +80,9 @@ module.exports = function(app){
 
     // 22. 내가 쓴 영화 API (22번UI) 
     app.get('/app/login/mypage/readingMyMovie', jwtMiddleware, user.getMovieLetterList)
+
+    // 23. 편지함 API (30번 UI)
+    app.get('/app/login/mypage/letterbox', jwtMiddleware, user.getLetterList)
     
 
 

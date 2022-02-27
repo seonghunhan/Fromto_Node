@@ -195,6 +195,17 @@ exports.retrieveIscheckedLetter = async function (userIdx) {
   }
 }
 
+exports.senderIdxCheckForDelete = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const retrieveSenderIdx = await userDao.selectLetterInfoByIschecked(connection, userIdx)
+
+  const senderIdx = retrieveSenderIdx.senderIdx
+
+  const deletePreferdata = await userDao.deletePreferData(connection, senderIdx)
+  connection.release();
+  return retrieveSenderIdx
+}
+
 exports.retrieveMovieLetterList = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
   const LetterListResult = await userDao.selectMovieLetterListByIdx(connection, userIdx)
@@ -236,13 +247,38 @@ exports.retrieveMovieLetterList = async function (userIdx) {
   // }
 }
 
-exports.senderIdxCheckForDelete = async function (userIdx) {
+exports.retrieveLetterList = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const retrieveSenderIdx = await userDao.selectLetterInfoByIschecked(connection, userIdx)
+  const LetterListResult = await userDao.selectLetterListByIdx(connection, userIdx)
 
-  const senderIdx = retrieveSenderIdx.senderIdx
+  // console.log(LetterListResult)
+  // console.log(LetterListResult.length)
 
-  const deletePreferdata = await userDao.deletePreferData(connection, senderIdx)
+  const posterIdxList = []
+  
+  //리스트에서 posterIdx만 추출해서 새list에 넣기
+  for (var i = 0; i < LetterListResult.length; i++){  
+    posterIdxList.push(LetterListResult[i].posterIdx)
+  }
+
+  // 리스트에서 중복 제거
+  const newPosterIdxList = []
+  posterIdxList.forEach((element) => {
+    if (!newPosterIdxList.includes(element)){
+      newPosterIdxList.push(element);
+    }
+  })
+
+  // 취합한 posterIdx를 기준으로 제목,포스터url 2차원배열로 담기(1개 idx에 여러대화가 있으니 2차원으로 해야함)
+  const retrieveLetterListByPosterIdx = []
+  for (var i = 0; i < newPosterIdxList.length; i++){
+    var temp = await userDao.selectLetterListByPosterIdxForLetterBox(connection, newPosterIdxList[i])
+    retrieveLetterListByPosterIdx.push(temp)
+  }
   connection.release();
-  return retrieveSenderIdx
+
+  return retrieveLetterListByPosterIdx
+
+
 }
+
