@@ -352,12 +352,12 @@ async function insertPosterurl(connection, posterurl) {
 //   return selectResultRow[0][0]
 // }
 
-async function insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx) {
+async function insertLetterInfo(connection, letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx, spoStatus) {
   const insertQuery = `
-  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, recipientIdx, posterIdx)
-  VALUES (?,?,?,?,?,?);
+  INSERT INTO Letter (letterTitle, movieTitle, contents, senderIdx, recipientIdx, posterIdx, spoStatus)
+  VALUES (?,?,?,?,?,?,?);
   `;
-  const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx]);
+  const insertResultRow = await connection.query(insertQuery, [letterTitle, movieTitle, contents, senderIdx, recipientIdx, poseterIdx, spoStatus]);
   //return insertResultRow[0].insertId
 }
 
@@ -377,7 +377,7 @@ async function selectFirstLetterIdx(connection, useridx){
   const selectQuery = `
   select idx, posterIdx
   from Letter
-  where recipientIdx = ? and ischecked = false
+  where recipientIdx = ? and ischecked = true
   order by createAt asc
   limit 1;
   `;
@@ -459,6 +459,74 @@ async function selectLetterListByPosterIdx(connection, posterIdx){
   const selectResultRow = await connection.query(selectQuery, posterIdx);
   return selectResultRow[0]
 }
+
+async function selectMyInfoByIdx(connection, idx){
+  const selectQuery = `
+  SELECT gender, age
+  FROM UserInfo
+  WHERE idx = ?
+  `;
+  const selectResultRow = await connection.query(selectQuery, idx)
+
+  //console.log(selectResultRow[0][0].posterIdx)
+  return selectResultRow[0][0]
+}
+
+async function selectLetterInfoByIschecked(connection, idx){
+  const selectQuery = `
+  SELECT letterTitle, movieTitle, contents, posterIdx, senderIdx
+  FROM Letter
+  WHERE recipientIdx = ? and ischecked = true
+  ORDER by createAt desc
+  limit 1;
+  `;
+  const selectResultRow = await connection.query(selectQuery, idx)
+
+  //console.log(selectResultRow[0][0].posterIdx)
+  console.log( selectResultRow[0][0])
+  return selectResultRow[0][0]
+}
+
+async function insertPrefer(connection, senderIdx, preferGender1, preferAge1){
+  const insertQuery = `
+  INSERT INTO FromTo.tempPreferInfo (senderIdx, preferAge, preferGender)
+  VALUES (?,?,?)
+  `
+  const insertResultRow = await connection.query(insertQuery, [senderIdx, preferAge1, preferGender1])
+}
+
+async function selectPreferInfo(connection, idx){
+  const selectQuery = `
+  SELECT preferAge, preferGender
+  FROM tempPreferInfo
+  WHERE senderIdx = ? 
+  `;
+  const selectResultRow = await connection.query(selectQuery, idx)
+
+  //console.log(selectResultRow[0][0].posterIdx)
+  return selectResultRow[0][0]
+}
+
+async function updateResendingLetter(connection, userIdx, recipientIdx){
+  const updateQuery = `
+  UPDATE Letter
+  SET ischecked = TRUE , recipientIdx = ?
+  WHERE recipientIdx = ? and ischecked = true
+  ORDER by createAt desc
+  limit 1;
+  `;
+  const selectResultRow = await connection.query(updateQuery, [recipientIdx, userIdx])
+}
+
+async function deletePreferData(connection, senderIdx){
+  const deleteCodeQuery = `
+  DELETE FROM tempPreferInfo
+  WHERE senderIdx = ?;
+  `;
+  const deleteCode = await connection.query(deleteCodeQuery, senderIdx);
+  return deleteCode;
+}
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -501,4 +569,10 @@ module.exports = {
   insertReplyLetterInfo,
   selectMovieLetterListByIdx,
   selectLetterListByPosterIdx,
+  selectMyInfoByIdx,
+  selectLetterInfoByIschecked,
+  insertPrefer,
+  selectPreferInfo,
+  updateResendingLetter,
+  deletePreferData,
 };

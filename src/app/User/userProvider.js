@@ -217,41 +217,32 @@ exports.retrieveMovieLetterList = async function (userIdx) {
     }
   })
 
+  // 취합한 posterIdx를 기준으로 제목,포스터url 2차원배열로 담기(1개 idx에 여러대화가 있으니 2차원으로 해야함)
+  // fm으로 2차원배열만드는거는 밑에(233줄) 있고 222~226줄은 어쩌다보니 2차원배열로 생성된것
   const retrieveLetterListByPosterIdx = []
   for (var i = 0; i < newPosterIdxList.length; i++){
-    // console.log(await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i]))
     var temp = await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i])
-    console.log(temp)
-    //retrieveLetterListByPosterIdx.push(temp)
-    //console.log(retrieveLetterListByPosterIdx.push(await userDao.selectLetterListByPosterIdx(connection, newPosterIdxList[i])))
+    retrieveLetterListByPosterIdx.push(temp)
   }
-
- console.log("여기다" + retrieveLetterListByPosterIdx)
-
-
-
-
-  
-
   connection.release();
 
-  // console.log(LetterListResult[3].posterIdx)  => 65
+  return retrieveLetterListByPosterIdx
+
+  //console.log(newArr)
 
   // const newArr = new Array(LetterListResult.length); //2차원 배열로 재배열
-
   // for (var i = 0; i < newArr.length; i++) {   
   //   newArr[i] = new Array(LetterListResult[i]);
   // }
-  // console.log(newArr[1][0].letterTitle)
-  // console.log(newArr)
+}
 
-  // const finalArr = new Array(LetterListResult.length)
-  // for (var i = 0; i < finalArr.length; i++) {   
-  //   finalArr[i] = new Array(newArr[i][0]);
-  //   console.log(i+1)
+exports.senderIdxCheckForDelete = async function (userIdx) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const retrieveSenderIdx = await userDao.selectLetterInfoByIschecked(connection, userIdx)
 
+  const senderIdx = retrieveSenderIdx.senderIdx
 
-
-
- // }
+  const deletePreferdata = await userDao.deletePreferData(connection, senderIdx)
+  connection.release();
+  return retrieveSenderIdx
 }

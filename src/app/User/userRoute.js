@@ -68,6 +68,13 @@ module.exports = function(app){
     // 20. 안읽은 편지 클릭 API
     app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
 
+    // 20.5. 랜덤 재전송 API (Letter테이블에서 ischecked가 가장 최근에 true로 바뀌는것 이용 -> 다시 false로 바꿔놓고 재전송)
+    app.get('/app/login/readingLetter/resending', jwtMiddleware, user.resendingLetter);
+
+    // 20.6 랜덤 data 삭제 API (임시로 저장한 선호도 연령,성별 삭제하는것) 
+    app.get('/app/login/readingLetter/deletePreferData', jwtMiddleware, user.deletePreferData);
+
+
     // 21. 편지 회신 API (Letter테이블에서 ischecked가 가장 최근에 true로 바뀌는것 이용)
     app.post('/app/login/readingLetter/replyToLetter', jwtMiddleware, user.postReplyInfo )
 

@@ -19,23 +19,7 @@ const { type } = require("os");
  exports.getTest = async function (req, res) {
 
 
-    const connection = await pool.getConnection(async (conn) => conn);
-    const LetterListResult = await userDao.selectReplyLetterInfo(connection, 13)
-
-    const letterTitle = LetterListResult[0][0].letterTitle
-    const movieTitle = LetterListResult[0][0].movieTitle
-    const recipientIdx = LetterListResult[0][0].senderIdx
-    const posterIdx = LetterListResult[0][0].posterIdx
-    const contents = "테스트트트트트입니다"
-
-    const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
-    const posterurl = retrievePosterurl.movieImgUrlForLetter
-
-    console.log(letterTitle,movieTitle , recipientIdx, posterurl)
-
-    const editReplyLetter = await userDao.insertReplyLetterInfo(connection, letterTitle, movieTitle, contents,recipientIdx, 13, posterIdx) 
-
-    connection.release();
+    //const userIdx = req.verifiedToken.userIdx;
 
 
 
@@ -482,9 +466,11 @@ exports.settings = async function (req, res) {
 
     const userIdx = req.verifiedToken.userIdx;
 
-    const {letterTitle, movieTitle, contents, posterurl, preferAge, preferGender} = req.body;
+    const {letterTitle, movieTitle, contents, posterurl, preferAge, preferGender, spoStatus} = req.body;
 
-    const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, posterurl, preferAge, preferGender)
+    const boolSpoStatus = Boolean(spoStatus)
+
+    const createLetterResult = await userService.createWritingLetter(userIdx, letterTitle, movieTitle, contents, posterurl, preferAge, preferGender, boolSpoStatus)
 
     return res.send(createLetterResult)
 }
@@ -520,6 +506,37 @@ exports.settings = async function (req, res) {
 }
 
 /**
+ * API No. 20.5
+ * API Name : 랜덤 재전송 API
+ * [GET] /app/login/readingLetter/resending
+ */
+
+ exports.resendingLetter = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const resultResponse = await userService.resendingLetter(userIdx)
+
+    return res.send(resultResponse)
+}
+
+/**
+ * API No. 20.6
+ * API Name :  랜덤 data 삭제 API
+ * [GET] /app/login/readingLetter/deletePreferData
+ */
+ exports.deletePreferData = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const resultResponse = await userProvider.senderIdxCheckForDelete(userIdx)
+
+    if(resultResponse){
+        return res.send(response(baseResponse.SUCCESS));
+    }
+}
+
+/**
  * API No. 21
  * API Name : 편지 회신 API
  * [POST] /app/login/readingLetter/replyToLetter
@@ -537,9 +554,6 @@ exports.settings = async function (req, res) {
     return res.send(ResultResponse);
 }
 
-
-
-
 /**
  * API No. 22
  * API Name : 내가 쓴 영화 API (22번UI) 
@@ -552,7 +566,7 @@ exports.settings = async function (req, res) {
 
     const resultResponse = await userProvider.retrieveMovieLetterList(userIdx)
 
-    //return res.send(resultResponse)
+    return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
 }
 
 
