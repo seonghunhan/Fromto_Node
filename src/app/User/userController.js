@@ -571,12 +571,6 @@ exports.settings = async function (req, res) {
 
 
 
-
-
-
-
-
-
 /**
  * API No. 6
  * API Name : 회원 정보 수정 API + JWT + Validation
