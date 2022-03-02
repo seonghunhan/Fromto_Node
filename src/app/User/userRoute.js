@@ -56,6 +56,9 @@ module.exports = function(app){
     // 16. 셋팅 알람설정 API
     app.post('/app/login/mypage/settings/alarmActive', jwtMiddleware, user.alarm);
 
+    // 16.5 필명 변경 API (24번 UI)
+    app.post('/app/login/mypage/settings/changeNickname', jwtMiddleware, user.getChangeNickname);
+
     // 17. 편지 작성 API (닉네임제공)
     app.get('/app/login/writingLetter', jwtMiddleware, user.getUserNickname);
 
@@ -88,7 +91,7 @@ module.exports = function(app){
     app.get('/app/login/mypage/letterbox/chatbox/:posterIdx', jwtMiddleware, user.postChatBox)
     
 
-
+    
 
 
     // // 3. 유저 조회 API (+ 검색)

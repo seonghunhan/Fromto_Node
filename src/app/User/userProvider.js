@@ -293,12 +293,24 @@ exports.retrieveChatList = async function (userIdx, posterIdx) {
   
   const retrieveChatListResult = await userDao.selectchatLetterByposterIdx(connection, posterIdx)
 
+  // idx로 닉네임 추출해서 기존 객체(retrieveChatListResult)에 넣기
   for (var i = 0; i < retrieveChatListResult.length; i++){
+    // 닉네임 추출
     var tempRecipientNickname = await userDao.selectUserNicknameByIdx(connection, retrieveChatListResult[i].recipientIdx)
     var tempSenderNickname = await userDao.selectUserNicknameByIdx(connection, retrieveChatListResult[i].senderIdx)
-    console.log(retrieveChatListResult[i])
-//retrieveChatListResult[i].push(tempSenderNickname)
+
+    // 기존객체(retrieveChatListResult)에 새로운 key(recipientNickname, senderNickname)값과 
+    // value(tempRecipientNickname, tempSenderNickname) 넣기
+    retrieveChatListResult[i].recipientNickname = tempRecipientNickname
+    retrieveChatListResult[i].senderNickname = tempSenderNickname
   }
-  console.log(retrieveChatListResult)
+
+  //console.log(retrieveChatListResult)
+  return retrieveChatListResult
+
+  // for (var i = 0; i < retrieveChatListResult.length; i++){
+  //   test = {key[i] : value[i]}
+  // }
+
   connection.release();
 }

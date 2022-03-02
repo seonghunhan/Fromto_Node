@@ -221,6 +221,54 @@ exports.editAlarmActive = async function (userIdx, alarm){
     }
 }
 
+exports.editNickname = async function (userIdx, newNickname){
+
+    try{
+    const connection = await pool.getConnection(async (conn) => (conn));
+    const selectCheckNicknameForChange = await userDao.selectUserNicknameForChange(connection, newNickname, userIdx)
+    const originNickname = await userDao.selectUserNicknameByIdx(connection, userIdx)
+
+
+    console.log(selectCheckNicknameForChange.length)
+
+        // 기존에 다른유저가 사용중인 닉네임을 사용하려할 경우 발생
+    if (selectCheckNicknameForChange.length > 0){
+        return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME)
+    } 
+
+    // 위에와 같이 사용할경우 로직상 에러발생하여 밑에다가 사용
+    const updateNicknameResult = await userDao.updateNickname(connection, userIdx, newNickname);
+    const selectChanegedNicknameResult = await userDao.selectUserNicknameByIdx(connection, userIdx)
+
+    
+    // 바뀐값 탐지 파라메터와 에러발생 파라메터를 활용하여 닉네임변경 에러검출
+
+    // 정상적으로 바꿀때
+    // changedRows : 1 , warningStatus : 0
+
+    // 바디 고장날때  -> 이때 닉네임은 공백으로 바뀐다
+    // changedRows : 1 , warningStatus : 1 
+
+    // 같은 닉네임으로 바꿀때
+    // changedRows : 0 , warningStatus : 0
+    if(updateNicknameResult[0] == 1 && updateNicknameResult[1] == 1){
+        const reupdateNicknameResult = await userDao.updateNickname(connection, userIdx, originNickname);
+        // 바디 오류일때 공백으로 바뀌기때문에 기존에 사용하던 닉네임으로 다시 바꿔줘야함
+        return errResponse(baseResponse.SIGNIN_CHANGENICKNAME_ERROR)
+    } else if(updateNicknameResult[0] == 1 && updateNicknameResult[1] == 0){
+        return response(baseResponse.SUCCESS, {'newnickname': selectChanegedNicknameResult})
+    } else if(updateNicknameResult[0] == 0 && updateNicknameResult[1] == 0) {
+        return errResponse(baseResponse.SIGNIN_CHANGENICKNAME_SAMEERROR)
+    }
+
+
+
+    }catch (err) {
+        logger.error(`App - editNickname Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
 exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, contents, posterurl, preferAge, preferGender, spoStatus){
 
     try{

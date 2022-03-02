@@ -34,7 +34,20 @@ async function selectUserNickname(connection, nickname) {
   const [userRow] = await connection.query(selectUserIdQuery, nickname);
   // console.log(userRow) 
   return userRow;
-}  
+} 
+
+async function selectUserNicknameForChange(connection, nickname, userIdx) {
+
+
+  const selectUserIdQuery = `
+  SELECT id, nickname
+  FROM UserInfo
+  WHERE nickname = ? and idx not in (?);
+                 `;
+  const [userRow] = await connection.query(selectUserIdQuery, [nickname, userIdx]);
+  // console.log(userRow) 
+  return userRow;
+} 
 
 // 모든 유저 조회
 async function selectUser(connection) {
@@ -75,7 +88,7 @@ async function selectUserAge(connection){
   const selectQuery = `
   SELECT birth, gender
   FROM UserInfo
-  WHERE idx = '13';
+  WHERE idx = '?';
   `;
   const selectResultRow = await connection.query(selectQuery)
 
@@ -280,6 +293,19 @@ async function updateAlarm(connection, userIdx, alarm){
     return updateResultRow
 }
 
+async function updateNickname(connection, userIdx, newNickname){
+  const updateQuery = `
+  UPDATE UserInfo
+  SET nickName = ?
+  WHERE idx = ?;
+  `;
+  const updateResultRow = await connection.query(updateQuery, [newNickname, userIdx])
+  console.log(updateResultRow[0])
+  // console.log(updateResultRow[0].changedRows)
+  // console.log("여기!"+updateResultRow[0].info.Warning)
+  return [updateResultRow[0].changedRows, updateResultRow[0].warningStatus]
+}
+
 async function selectUserNicknameByIdx(connection, userIdx) {
 
   const selectuserNicknameQuery = `
@@ -288,7 +314,7 @@ async function selectUserNicknameByIdx(connection, userIdx) {
   WHERE idx = ?;
   `;
   const selectResultRow = await connection.query(selectuserNicknameQuery, userIdx);
-  console.log(selectResultRow[0][0].nickname)
+  //console.log(selectResultRow[0][0].nickname)
   
   return selectResultRow[0][0].nickname
 }
@@ -567,6 +593,7 @@ module.exports = {
   selectUserId,
   deleteAccount,
   selectUserNickname,
+  selectUserNicknameForChange,
   selectUserId,
   selectUserAge,
   insertUserInfo,
@@ -588,6 +615,7 @@ module.exports = {
   updateprofileImgUrl,
   selectSettingsParmes,
   updateAlarm,
+  updateNickname,
   selectUserNicknameByIdx,
   selectUserIdxList,
   selectUserIdxListByFilter1,

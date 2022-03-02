@@ -439,6 +439,24 @@ exports.settings = async function (req, res) {
 
 
 /**
+ * API No. 16.5
+ * API Name : 필명 변경 API
+ * [GET] /app/login/mypage/settings/changeNickname
+ */
+
+
+ exports.getChangeNickname = async function (req, res) {
+
+    const userIdx = req.verifiedToken.userIdx;
+
+    const {newNickname} = req.body;
+
+    const changeNicknameResult = await userService.editNickname(userIdx, newNickname)
+
+    return res.send(changeNicknameResult)
+}
+
+/**
  * API No. 17
  * API Name : 편지 작성 API (닉네임제공)
  * [GET] /app/login/writingeLetter
@@ -566,7 +584,7 @@ exports.settings = async function (req, res) {
 
     const resultResponse = await userProvider.retrieveMovieLetterList(userIdx)
 
-    return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
+    return res.send(response(baseResponse.SUCCESS, resultResponse))
 }
 
 /**
@@ -581,7 +599,7 @@ exports.settings = async function (req, res) {
 
     const resultResponse = await userProvider.retrieveLetterList(userIdx)
 
-    return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
+    return res.send(response(baseResponse.SUCCESS, resultResponse))
 }
 
 /**
@@ -601,7 +619,7 @@ exports.settings = async function (req, res) {
 
     const resultResponse = await userProvider.retrieveChatList(userIdx, posterIdx)
 
-    //return res.send(response(baseResponse.SUCCESS, {'result': resultResponse}))
+    return res.send(response(baseResponse.SUCCESS, resultResponse))
 }
 
   

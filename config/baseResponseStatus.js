@@ -30,6 +30,8 @@ module.exports = {
     SIGNIN_CHANGEPASSWORD_DATA_EMPTY : { "isSuccess": false,"code": 2015,"message":"모든 정보를 입력해주세요." },
     SIGNIN_PASSWORDAUTHCODE_WRONG :{ "isSuccess": false,"code": 2016,"message":"새로 발급된 비밀번호가 틀립니다." },
     SIGNIN_PASSWORD_NOT_MATCHED :{ "isSuccess": false,"code": 2017,"message":"새로운 비밀번호가 서로 같지 않습니다." },
+    SIGNIN_CHANGENICKNAME_ERROR :{"isSuccess": false,"code": 2018,"message":"Body 체크 부탁드려요"},
+    SIGNIN_CHANGENICKNAME_SAMEERROR :{"isSuccess": false,"code": 2019,"message":"기존과 동일한 닉네임입니다."},
 
     USER_USERID_EMPTY : { "isSuccess": false, "code": 2018, "message": "userId를 입력해주세요." },
     USER_USERID_NOT_EXIST : { "isSuccess": false, "code": 2019, "message": "해당 회원이 존재하지 않습니다." },
@@ -47,7 +49,7 @@ module.exports = {
 
     // Response error
     SIGNUP_REDUNDANT_EMAIL : { "isSuccess": false, "code": 3001, "message":"이미 계정이 존재합니다." },
-    SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"중복된 닉네임입니다." },
+    SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 3002, "message":"이미 사용중인 닉네임입니다." },
 
     SIGNIN_ID_WRONG : { "isSuccess": false, "code": 3003, "message": "존재하지 않는 아이디입니다." },
     SIGNIN_PASSWORD_WRONG : { "isSuccess": false, "code": 3004, "message": "비밀번호가 일치하지 않습니다." },
