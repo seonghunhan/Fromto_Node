@@ -1,0 +1,104 @@
+@media all and (min-width : 1200px)  { 
+
+    @keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @-moz-keyframes fadein { /* Firefox */
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @-webkit-keyframes fadein { /* Safari and Chrome */
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @-o-keyframes fadein { /* Opera */
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    body {
+        margin-left: 0px;
+        margin-right: 0px;
+        animation: fadein 1.5s;
+        -moz-animation: fadein 1.5s; /* Firefox */
+        -webkit-animation: fadein 1.5s; /* Safari and Chrome */
+        -o-animation: fadein 1.5s; /* Opera */
+    }
+
+    .start {
+
+        height: 50vh;
+        width: 100vh;
+        position: relative;
+        margin: auto;
+        left: 100px;
+        margin-top: 400px;
+        margin-bottom: 130px;
+    }
+
+    .title {
+        font-size: 50px;
+    }
+
+    .text-color-main {
+        background-image: linear-gradient(135deg, #4568dc, #b06ab3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .start-btn {
+        border: 2px solid #b70ebd;
+        width: 150px;
+        font-size: 15px;
+        font-weight: 600;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        background-image: linear-gradient(135deg, #4568dc, #b06ab3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        box-shadow: inset 0px 0px 0px #b70ebd;
+        -webkit-transition: all 0.4s cubic-bezier(.5, .24, 0, 1);
+        transition: all 0.4s cubic-bezier(.5, .24, 0, 1)
+    }
+
+    .start-btn:hover {
+        box-shadow: inset 300px 0px 0px #b70ebd;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: unset;
+        color: white;
+    }
+
+
+    #contents1 {
+        width: 100%;
+        height: 100vh;
+    }
+
+}
