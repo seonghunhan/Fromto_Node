@@ -240,7 +240,7 @@ exports.editNickname = async function (userIdx, newNickname){
     const updateNicknameResult = await userDao.updateNickname(connection, userIdx, newNickname);
     const selectChanegedNicknameResult = await userDao.selectUserNicknameByIdx(connection, userIdx)
 
-    
+
     // 바뀐값 탐지 파라메터와 에러발생 파라메터를 활용하여 닉네임변경 에러검출
 
     // 정상적으로 바꿀때
@@ -260,8 +260,6 @@ exports.editNickname = async function (userIdx, newNickname){
     } else if(updateNicknameResult[0] == 0 && updateNicknameResult[1] == 0) {
         return errResponse(baseResponse.SIGNIN_CHANGENICKNAME_SAMEERROR)
     }
-
-
 
     }catch (err) {
         logger.error(`App - editNickname Service error\n: ${err.message}`);

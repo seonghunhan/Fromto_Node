@@ -89,6 +89,9 @@ module.exports = function(app){
 
     // 24. 채팅 편지함 API (31번 UI)
     app.get('/app/login/mypage/letterbox/chatbox/:posterIdx', jwtMiddleware, user.postChatBox)
+
+    // // 25. 채팅 내용 API (31번UI에서 12번UI로 이동할 때)
+    // app.post('/app/login/mypage/letterbox/chatbox/readingChat', jwtMiddleware, user.getChatContents)
     
 
     

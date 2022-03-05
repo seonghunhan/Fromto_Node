@@ -624,6 +624,43 @@ exports.settings = async function (req, res) {
 
   
 
+/**
+ * API No. 25
+ * API Name : 채팅 내용 API (31번UI에서 12번UI로 이동할 때)
+ * [POST] /app/login/mypage/letterbox/chatbox/readingChat
+ */
+
+
+//  exports.getChatContents = async function (req, res) {
+
+//     const userIdx = req.verifiedToken.userIdx;
+
+//     const {replyContents} = req.body;
+
+//     const ResultResponse = await userService.createReplyLetter(userIdx, replyContents)
+
+//     return res.send(ResultResponse);
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * API No. 6
