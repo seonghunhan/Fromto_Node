@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris_profile</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bonheur+Royale&display=swap" rel="stylesheet">
+    <link href="1.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <header class="start">
+        <h1 class="title">프롬투
+            <span class=text-color-main>테스트중.</span>
+            <br>
+            Backend-Server</h1>
+            <a href="javascript:KakaoLogin();" class="start-btn"> &nbsp 더 알아보기</a>
+            <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+            <script>
+                //8c2b36e691cd6b006f0baa2e8c3733fb
+                window.Kakao.init("8c2b36e691cd6b006f0baa2e8c3733fb");
+        
+                function KakaoLogin() {
+                    window.Kakao.Auth.login({
+                        scope:'profile_nickname, account_email, gender, age_range, birthday',
+                        success: function(authObj){
+                            console.log(authObj);
+                            window.Kakao.API.request({
+                                url:'/v2/user/me',
+                                success: res => {
+                                    const kakao_account = res.kakao.account;
+                                    console.log(kakao_account);
+                                }
+                            });
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </header>
+<!-- 
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script>
+        //8c2b36e691cd6b006f0baa2e8c3733fb
+        window.Kakao.init("8c2b36e691cd6b006f0baa2e8c3733fb");
+
+        function KakaoLogin() {
+            window.Kakao.Auth.login({
+                scope:'	profile_nickname, account_email, gender, age_range, birthday',
+                success: function(authObj){
+                    console.log(authObj);
+                    window.Kakao.API.request({
+                        url:'/v2/user/me',
+                        // success: res => {
+                        //     const kakao_account = res.kakao.account;
+                        //     console.log(kakao_account);
+                        // }
+                    });
+                }
+            });
+        }
+    </script> -->
+
+
+
+</body>
+
+</html>
