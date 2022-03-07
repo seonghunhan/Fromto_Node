@@ -15,7 +15,7 @@ const { type } = require("os");
 const AWS = require('aws-sdk')
 const fs = require('fs'); //filesystem모듈 파일 읽고 쓰고 보내고하는데 사용
 const secret_config = require('../../../config/secret');
-const bodyParser = require('body-parser'); 
+// const bodyParser = require('body-parser'); 
 // app.use(bodyParser.urlencoded({extended:true})); 
 // app.use(bodyParser.json());
 
@@ -31,7 +31,6 @@ const bodyParser = require('body-parser');
         accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
         secretAccessKey: secret_config.s3SevretAccessKey // 사용자의 secretAccessKey
     });
-    
     const bucket_name = "fromto"; //생성한 버킷 이름
 
 

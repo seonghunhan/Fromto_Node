@@ -404,7 +404,7 @@ async function selectFirstLetterIdx(connection, useridx){
   const selectQuery = `
   select idx, posterIdx
   from Letter
-  where recipientIdx = ? and ischecked = true
+  where recipientIdx = ? and ischecked = false
   order by createAt asc
   limit 1;
   `;
@@ -434,7 +434,7 @@ async function selectposterurl(connection, idx){
 
 async function selectLetterInfo(connection, idx){
   const selectQuery = `
-  SELECT letterTitle, movieTitle, contents, senderIdx, recipientIdx
+  SELECT letterTitle, movieTitle, contents, senderIdx, recipientIdx, spoStatus
   FROM Letter
   WHERE idx = '?';
   `;

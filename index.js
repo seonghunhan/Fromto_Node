@@ -8,6 +8,8 @@ const {logger} = require('./config/winston');
 
 
 const port = 3000;
+app.listen(port);
+logger.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
 
 // 정적파일제공
 app.use(static(path.join(__dirname,'../')))
@@ -38,6 +40,5 @@ app.use(static(path.join(__dirname,'../')))
 //     });
 // });
 
-app.listen(port);
-logger.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
+
 //logger.info(`${process.env.NODE_ENV} - ${secret_config.s3AccessKey + secret_config.s3SevretAccessKey}`);

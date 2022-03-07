@@ -69,7 +69,7 @@ module.exports = function(app){
     app.get('/app/login/ischeckedLetter', jwtMiddleware, user.getischeckLetter);
 
     // 20. 안읽은 편지 클릭 API
-    app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo);
+    app.get('/app/login/readingLetter', jwtMiddleware, user.getLetterInfo); // ischeckd에서 false(0)가 안읽은것
 
     // 20.5. 랜덤 재전송 API (Letter테이블에서 ischecked가 가장 최근에 true로 바뀌는것 이용 -> 다시 false로 바꿔놓고 재전송)
     app.get('/app/login/readingLetter/resending', jwtMiddleware, user.resendingLetter);

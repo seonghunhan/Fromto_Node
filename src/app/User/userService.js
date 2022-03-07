@@ -300,9 +300,9 @@ exports.createWritingLetter = async function (userIdx, letterTitle, movieTitle, 
             const preferGender1 = preferGender
             const preferAge1 = preferAge
             const preferAge2 = parseInt(preferAge) + 10
-
+            if (spoStatus == true){
             const savePrefer = await userDao.insertPrefer(connection, senderIdx, preferGender1, preferAge1)
-        
+            }
             const resultListByPrefer = new Array();
             // 필터가 0번(상관없음)일경우 4가지 경우의 수
             if(preferAge1 == 0 && preferGender1 == 0 ){
@@ -361,11 +361,13 @@ exports.editLetterInfo = async function (userIdx){
 
     try{
         const connection = await pool.getConnection(async (conn) => conn);
+        // 가장 최근에 온 편지를 ischecked(0:안읽음)으로 선별
         const retriveFirstLetterInfo = await userDao.selectFirstLetterIdx(connection, userIdx)
+        //console.log("여기"+retriveFirstLetterInfo)
 
         const letterIdx = retriveFirstLetterInfo.idx
         const posterIdx = retriveFirstLetterInfo.posterIdx
-
+        // 위에서 ischecked가 0인거 읽었으니 true(1:읽음)으로 바꿔주기
         const updateIscheckedByFirstIdx = await userDao.updateLetterIschecked(connection,letterIdx)
         const retrievePosterurl = await userDao.selectposterurl(connection, posterIdx)
         const retriveFirstLetterInfoByIdx = await userDao.selectLetterInfo(connection,letterIdx)
@@ -377,7 +379,8 @@ exports.editLetterInfo = async function (userIdx){
         const SenderNickname = await userDao.selectUserNicknameByIdx(connection, senderIdx)
         const RecipientNickname = await userDao.selectUserNicknameByIdx(connection, recipientIdx)
 
-        retriveFirstLetterInfoByIdx.posterurl = posterurlValue   // 기존 객체에 새로운 객체 (key는 posterurl, value는 posterurlValue)
+        // 기존 객체에 새로운 객체 (key는 posterurl, value는 posterurlValue)
+        retriveFirstLetterInfoByIdx.posterurl = posterurlValue  
         retriveFirstLetterInfoByIdx.senderNickname = SenderNickname
         retriveFirstLetterInfoByIdx.recipientNickname = RecipientNickname
 
