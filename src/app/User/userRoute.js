@@ -1,9 +1,16 @@
 module.exports = function(app){
     const user = require('./userController');
     const jwtMiddleware = require('../../../config/jwtMiddleware');
+    const multer = require('multer');
+    var storage = multer.memoryStorage()
+    var upload = multer({storage: storage});
 
-    // 0. 테스트 API
-    app.get('/app/test', user.getTest)
+
+    // // 0. 테스트 API
+    // app.post('/app/test', user.getTest)
+
+    // 0. s3 테스트 API
+    app.post('/app/test', upload.single("img"), user.getTest)
 
     // 1. 유저 생성 (회원가입) API
     app.post('/app/newusers', user.postUsers);

@@ -15,9 +15,10 @@ const { type } = require("os");
 const AWS = require('aws-sdk')
 const fs = require('fs'); //filesystem모듈 파일 읽고 쓰고 보내고하는데 사용
 const secret_config = require('../../../config/secret');
-// const bodyParser = require('body-parser'); 
-// app.use(bodyParser.urlencoded({extended:true})); 
-// app.use(bodyParser.json());
+const multer = require('multer');
+var storage = multer.memoryStorage()
+var upload = multer({storage: storage});
+
 
 /**
  * API No. 0
@@ -27,15 +28,42 @@ const secret_config = require('../../../config/secret');
  exports.getTest = async function (req, res) {
 
 
+    // 이미지파일 업로드
     const s3 = new AWS.S3({
         accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
-        secretAccessKey: secret_config.s3SevretAccessKey // 사용자의 secretAccessKey
+        secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
+        region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
     });
-    const bucket_name = "fromto"; //생성한 버킷 이름
+
+    const bucket_name = "fromto-posterimage/poster"; //생성한 버킷 이름
+    const key = req.file.originalname;
+    const body = req.file.buffer;
+    
+    const params = {
+        Bucket: bucket_name,
+        Key: key, // file name that you want to save in s3 bucket
+        Body: body
+    }
+
+    console.log('파일 이름 : ' + key);
+
+    s3.upload(params, (err, data) => {
+        if (err) {
+            res.status(500).json({error:"Error -> " + err});
+        }
+        console.log('파일 이름 : ' + req.file.originalname);
+        
+        return res.send({message: 'upload success! -> filename = ' + req.file.originalname})
+
+    })
 
 
-    //파일 업로드 테스트
-    //const fileContent = fs.readFileSync('./sample1.txt');
+
+
+    //-----------------------------------------------------------------------------------
+
+    // //파일 업로드 테스트
+    // const fileContent = fs.readFileSync('./sample1.txt');
     // const params = {
     //     Bucket: bucket_name,
     //     Key: '저장했네샘플', // file name that you want to save in s3 bucket
@@ -57,28 +85,29 @@ const secret_config = require('../../../config/secret');
     //     }
     // });
 
+    //-------------------------------------------------------------------------------------
 
-    // 파일 다운로드 테스트
-    // 실제로 데이터를 저장하지 않고 파싱만하여 사용할경우
-    // res.json(...) 혹은 res.send(...) 를 사용하면 된다.
-    const params = {
-        Bucket: bucket_name,
-        Key: '저장했네샘플' // 버킷에서 가져올 객체 이름
-    }
-    // getObject를 이용하여 객체의 데이터를 가져올 수 있다.
-    s3.getObject(params, (err, data) => {
-        if (err) {
-            res.send(err);
-        }
-        else {
-    // body에서 입력받은 값을 파일명으로 사용하여 로컬에 결과를 저장한다.
-                fs.writeFileSync(req.body.filename, data.Body.toString());
+    // // 파일 다운로드 테스트
+    // // 실제로 데이터를 저장하지 않고 파싱만하여 사용할경우
+    // // res.json(...) 혹은 res.send(...) 를 사용하면 된다.
+    // const params = {
+    //     Bucket: bucket_name,
+    //     Key: '저장했네샘플' // 버킷에서 가져올 객체 이름
+    // }
+    // // getObject를 이용하여 객체의 데이터를 가져올 수 있다.
+    // s3.getObject(params, (err, data) => {
+    //     if (err) {
+    //         res.send(err);
+    //     }
+    //     else {
+    // // body에서 입력받은 값을 파일명으로 사용하여 로컬에 결과를 저장한다.
+    //             fs.writeFileSync(req.body.filename, data.Body.toString());
     
-                res.status(200).send({
-                    content: data.Body.toString()
-                })
-            }
-        });
+    //             res.status(200).send({
+    //                 content: data.Body.toString()
+    //             })
+    //         }
+    //     });
 
  }
 
