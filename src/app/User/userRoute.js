@@ -55,7 +55,7 @@ module.exports = function(app){
     app.get('/app/login/mypage/writtenPosterurl', jwtMiddleware, user.getMypageProfileurl); 
 
     // 14. 프로필사진 변경 API
-    app.post('/app/login/mypage/changeProfileImgUrl', jwtMiddleware, user.changeProfileUrl);
+    app.post('/app/login/mypage/changeProfileImgUrl',jwtMiddleware, upload.single("img"), user.changeProfileUrl);
 
     // 15. 셋팅 API
     app.get('/app/login/mypage/settings', jwtMiddleware, user.settings);

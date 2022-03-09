@@ -1,6 +1,5 @@
 const {logger} = require("../../../config/winston");
 const {pool} = require("../../../config/database");
-const secret_config = require("../../../config/secret");
 
 // user 뿐만 아니라 다른 도메인의 Provider와 Dao도 아래처럼 require하여 사용할 수 있습니다.
 const userProvider = require("./userProvider");
@@ -12,6 +11,13 @@ const {errResponse} = require("../../../config/response");
 
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+
+const AWS = require('aws-sdk')
+const fs = require('fs'); //filesystem모듈 파일 읽고 쓰고 보내고하는데 사용
+const secret_config = require("../../../config/secret");
+const multer = require('multer');
+var storage = multer.memoryStorage()
+var upload = multer({storage: storage});
 
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
@@ -178,19 +184,49 @@ exports.editPassword = async function (email, password) {
     }
 }
 
-exports.editProfileImgUrl = async function (userIdx, ImgUrl){
+exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
 
     try{
         const connection = await pool.getConnection(async (conn) => conn);
+
+        const s3 = new AWS.S3({
+            accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
+            secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
+            region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
+        });
+
         const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
+
+        const params1 = {
+            Bucket: bucket_name,
+            Key: key, // file name that you want to save in s3 bucket
+            Body: body
+        }
+
+        const params2 = {
+            Bucket: bucket_name,
+            Key: key, // file name that you want to save in s3 bucket
+        }
     
         if (selectUserIdxforUpdate.length < 1){
-        const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
-        return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : ImgUrl});
-        } else {
-        const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
-        return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
-        }
+            //const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, ImgUrl);
+            //이미지 업로드
+            s3.upload(params1, (err, data) => {
+                if (err) {
+                    res.status(500).json({error:"Error -> " + err});
+                }
+                console.log('파일 이름 : '  )//+ req.file.originalname);
+                console.log({message: 'upload success! -> filename = ' })//+ req.file.originalname})
+        
+            })
+            //이미지 url 추출
+            const url = s3.getSignedUrl('getObject', params2);
+            console.log(url)
+            return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : url});
+        } //else {
+        //     const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
+        //     return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
+        // }
         connection.release();
 
     }catch (err) {
