@@ -10,7 +10,7 @@ module.exports = function(app){
     app.get('/app/test', user.getTest)
 
     // 0. s3 테스트 API
-    //app.post('/app/test', upload.single("img"), user.getTest)
+    //app.post('/app/s3test', upload.single("img"), user.segetTest)
 
     // 1. 유저 생성 (회원가입) API
     app.post('/app/newusers', user.postUsers);

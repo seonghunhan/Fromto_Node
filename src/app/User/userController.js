@@ -27,6 +27,37 @@ var upload = multer({storage: storage});
  */
  exports.getTest = async function (req, res) {
 
+    // function test1(){
+    //     return new Promise(function(resolve, reject){
+    //         resolve(3)
+    //     });
+    // }
+
+    // test1().then(function(three){
+    //     const ta = three + 1
+    //     console.log(ta)
+    // })
+
+    // test1().then().catch(function(err){
+    //     console.log(err);
+    // })
+    const a = 4
+    const b = 2
+    const c = 3
+
+    const connection = await pool.getConnection(async (conn) => conn);
+    const editUserResult = await userDao.test(connection,a,b,c)
+    connection.release();
+ }
+
+
+/**
+ * API No. 0
+ * API Name : 테스트 API
+ * [GET] /app/test
+ */
+ exports.s3getTest = async function (req, res) {
+
     // 이미지 url 불러오기
     const s3 = new AWS.S3({
         accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
@@ -512,8 +543,6 @@ exports.changeProfileUrl = async function (req, res) {
         Key: key, // file name that you want to save in s3 bucket
         Body: body
     }
-
-    console.log('파일 이름 : ' + key);
 
     const changeprofileUrl = await userService.editProfileImgUrl(userIdxResult, bucket_name, key, body )
 

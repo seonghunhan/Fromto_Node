@@ -262,14 +262,25 @@ async function insertNewprofileImgUrl(connection, userIdx, key, ImgUrl) {
   return insertResultRow[0]
 }
 
-async function updateprofileImgUrl(connection, userIdx, ImgUrl) {
+async function selectOriginKeyFilename(connection, userIdx){
+  const selectQuery = `
+  SELECT keyFilename
+  FROM MyPage
+  WHERE userIdx = '?';
+  `;
+  const selectResultRow = await connection.query(selectQuery, userIdx)
+  return selectResultRow[0][0].keyFilename
+}
+
+async function updateprofileImgUrl(connection, url, key, userIdx) {
+  console.log("SQL실행하려고 했어")
   const updateProfileUrlQuery = `
   UPDATE MyPage
-  SET profileImgUrl = ?
+  SET profileImgUrl = ?, keyFilename = ?
   WHERE userIdx = ?;
   `;
-  const updateResultRow = await connection.query(updateProfileUrlQuery, [ImgUrl, userIdx]);
-  console.log(updateResultRow)
+  const updateResultRow = await connection.query(updateProfileUrlQuery, [url, key, userIdx]);
+  //console.log(updateResultRow)
   //return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
@@ -588,6 +599,7 @@ async function selectchatLetterByposterIdx(connection, posterIdx){
   return selectResultRow[0]
 }
 
+
 module.exports = {
   selectUser,
   selectUserId,
@@ -641,4 +653,6 @@ module.exports = {
   selectLetterListByIdx,
   selectLetterListByPosterIdxForLetterBox,
   selectchatLetterByposterIdx,
+  selectOriginKeyFilename,
+  
 };
