@@ -12,12 +12,14 @@ const {errResponse} = require("../../../config/response");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const AWS = require('aws-sdk')
+const AWS = require('aws-sdk') //AWS에서 제공하는 Node.js JavaScript용 AWS SDK
 const fs = require('fs'); //filesystem모듈 파일 읽고 쓰고 보내고하는데 사용
 const secret_config = require("../../../config/secret");
-const multer = require('multer');
+const multer = require('multer'); //파일 업로드의 위치를 s3의 버킷으로 보냄
 var storage = multer.memoryStorage()
 var upload = multer({storage: storage});
+
+
 
 // Service: Create, Update, Delete 비즈니스 로직 처리
 
@@ -221,12 +223,13 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             })
             //이미지 url 추출
             const url = s3.getSignedUrl('getObject', params2);
-            console.log(url)
+            //console.log(url)
+            const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, key, url);
             return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : url});
         } //else {
-        //     const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
-        //     return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
-        // }
+            //const updateUrl = await userDao.updateprofileImgUrl(connection, userIdx, ImgUrl);
+           // return response(baseResponse.SUCCESS, {'url을 수정했습니다.' : ImgUrl});
+        //}
         connection.release();
 
     }catch (err) {

@@ -251,12 +251,12 @@ async function selectUserIdx(connection, userIdx) {
   return selectResultRow[0]
 }
 
-async function insertNewprofileImgUrl(connection, userIdx, ImgUrl) {
+async function insertNewprofileImgUrl(connection, userIdx, key, ImgUrl) {
   const insertQuery = `
-  INSERT INTO MyPage (userIdx, profileImgUrl)
-  VALUES (?,?);
+  INSERT INTO MyPage (userIdx, keyFilename, profileImgUrl)
+  VALUES (?,?,?);
   `;
-  const insertResultRow = await connection.query(insertQuery, [userIdx, ImgUrl]);
+  const insertResultRow = await connection.query(insertQuery, [userIdx, key, ImgUrl]);
 
   console.log(insertResultRow[0])
   return insertResultRow[0]
