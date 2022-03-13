@@ -221,7 +221,7 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             //이미지 url 추출
             const url = s3.getSignedUrl('getObject', params2);
             const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, key, url);
-            return response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : url});
+            return response(baseResponse.SUCCESS, {'imageUrl' : url});
         }else {
             const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
             const ParamsForDelete = {
@@ -241,7 +241,7 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
                     
                 }).then(function(result){
                     return new Promise(function(resolve, reject){
-                        console.log("여기까지는 왔어유")
+                        //console.log("여기까지는 왔어유")
                         // upload라는 비동기함수땜에 또 promise사용한것 then을 연속 두번사용하면 promise처럼 안해줌
                         s3.upload(params1, (err, data) => {
                             if (err) {
@@ -257,15 +257,16 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
                         console.log(userIdx, key, url)    
                         const connection = await pool.getConnection(async (conn) => conn);                 
                         const updateNewProfileImgUrl = await userDao.updateprofileImgUrl(connection, url, key, userIdx);
-                        return
+                        return response(baseResponse.SUCCESS, {'imageUrl' : url});
                     }).catch(function(err) {
                         console.log('마지막에 catch붙이는게 깔끔', err);
                     });
-                     //return // response(baseResponse.SUCCESS, {'새로운 url을 등록했습니다.' : url});
                 })
             }
 
-            deleteAndupload()
+            return deleteAndupload()
+
+            //return response(baseResponse.SUCCESS, {'imageUrl' : url});
 
 
         }
