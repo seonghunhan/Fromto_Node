@@ -686,7 +686,29 @@ exports.settings = async function (req, res) {
 
     const changeprofileUrl = await userService.createPosterUrl(userIdxResult, bucket_name, key, body )
 
-    //res.send(changeprofileUrl)
+    res.send(changeprofileUrl)
+
+}
+
+/**
+ * API No. 17.6
+ * API Name : 포스터 선택 수정 API
+ * [POST]] /app/login/writingLetter/saveEditingPoster
+ */
+
+
+ exports.postEditPosterFile = async function (req, res) {
+
+    const userIdxResult = req.verifiedToken.userIdx;
+    const {prePosterName} = req.body;
+    
+    const bucket_name = "fromto-posterimage/poster"; //생성한 버킷 이름
+    const key = req.file.originalname; //userIdx로 프론트한테 받을것 // file name that you want to save in s3 bucket
+    const body = req.file.buffer;
+
+    const changeprofileUrl = await userService.createEditingPosterUrl(userIdxResult, bucket_name, key, body, prePosterName )
+
+    res.send(changeprofileUrl)
 
 }
 

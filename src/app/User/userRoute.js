@@ -72,6 +72,9 @@ module.exports = function(app){
     // 17.5 포스터 선택 API (앨범에서 포스터 고를 때)
     app.post('/app/login/writingLetter/savePoster', jwtMiddleware, upload.single("img"), user.postPosterFile);
 
+    // 17.6 포스터 선택 수정 API (앨범에서 포스터 고르고 다시 고를 때)
+    app.post('/app/login/writingLetter/saveEditingPoster', jwtMiddleware, upload.single("img"), user.postEditPosterFile);
+
     // 18. 편지 보내기 API (DB저장)
     app.post('/app/login/sendingLetter', jwtMiddleware, user.postWritedLetter);
 

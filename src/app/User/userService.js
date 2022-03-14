@@ -348,7 +348,7 @@ exports.editNickname = async function (userIdx, newNickname){
     }
 }
 
-exports.createPosterUrl = async function (userIdx, alarm){
+exports.createPosterUrl = async function (userIdx, bucket_name, key, body){
 
     try{
         const connection = await pool.getConnection(async (conn) => conn);
@@ -359,18 +359,101 @@ exports.createPosterUrl = async function (userIdx, alarm){
             region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
         });
 
-        const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
-
         const params1 = {
             Bucket: bucket_name,
-            Key: key, // file name that you want to save in s3 bucket
+            Key: userIdx + "user" + key, // file name that you want to save in s3 bucket
             Body: body
         }
 
         const params2 = {
             Bucket: bucket_name,
-            Key: key, // file name that you want to save in s3 bucket
+            Key: userIdx + "user" + key, // file name that you want to save in s3 bucket
         }
+
+        s3.upload(params1, (err, data) => {
+            if (err) {
+                res.status(500).json({error:"Error -> " + err});
+            }
+            console.log({message: 'upload success! -> filename = ' + key})
+        })
+        //이미지 url 추출
+        const url = s3.getSignedUrl('getObject', params2);
+        const insertNewPosterUrl = await userDao.insertPosterUrl(connection, params2.Key, url);
+        return response(baseResponse.SUCCESS, {'imageUrl' : url});
+    
+
+    }catch (err) {
+        logger.error(`App - editAlarmActive Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.createEditingPosterUrl = async function (userIdx, bucket_name, key, body, prePosterName){
+
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        const s3 = new AWS.S3({
+            accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
+            secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
+            region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
+        });
+
+        const params1 = {
+            Bucket: bucket_name,
+            Key: userIdx + "user" + key, // file name that you want to save in s3 bucket
+            Body: body
+        }
+
+        const params2 = {
+            Bucket: bucket_name,
+            Key: userIdx + "user" + key, // file name that you want to save in s3 bucket
+        }
+
+        // const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
+        const ParamsForDelete = {
+            Bucket: bucket_name,
+            Key: prePosterName
+        }
+        // deleteObject와 upload함수가 비동기식으로 실행되기 때문에 promise,then을 사용하여 순차적으로 실행
+        function deleteAndupload(){
+            return new Promise(function(resolve, reject){
+                s3.deleteObject(ParamsForDelete, function(err, data){
+                    if (err) {
+                        res.status(500).json({error:"Error ->" + err})
+                    }else {
+                        console.log("S3에 기존 이미지가 있어서 삭제했습니다.")
+                        resolve()
+                    }})
+                
+            }).then(function(result){
+                return new Promise(function(resolve, reject){
+                    //console.log("여기까지는 왔어유")
+                    // upload라는 비동기함수땜에 또 promise사용한것 then을 연속 두번사용하면 promise처럼 안해줌
+                    s3.upload(params1, (err, data) => {
+                        if (err) {
+                            res.status(500).json({error:"Error -> " + err});
+                        }
+                        console.log({message: 'upload success! -> filename = ' + key})
+                        resolve()
+                    })
+                }).then(async function(result){
+                    //새로 업로드된 이미지 URL 추출(이걸 밖에다가 넣으면 deleteAndupload()함수가 쓰레드처럼 동작하기에 순차적으로 넣으려면 여기다 넣어야함)
+                    console.log("여기다!!!!")
+                    const url = s3.getSignedUrl('getObject', params2);
+                    console.log(userIdx, key, url)    
+                    const connection = await pool.getConnection(async (conn) => conn);                 
+                    const updateNewProfileImgUrl = await userDao.updatePosterUrl(connection, params2.Key, url, prePosterName);
+                    return response(baseResponse.SUCCESS, {'imageUrl' : url});
+                }).catch(function(err) {
+                    console.log('마지막에 catch붙이는게 깔끔', err);
+                });
+            })
+        }
+
+        return deleteAndupload()
+
+        //return response(baseResponse.SUCCESS, {'imageUrl' : url});
     
 
     }catch (err) {

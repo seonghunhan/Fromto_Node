@@ -284,6 +284,18 @@ async function updateprofileImgUrl(connection, url, key, userIdx) {
   //return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
+async function updatePosterUrl(connection, Key, url, prePosterName) {
+  console.log("SQL실행하려고 했어")
+  const updateProfileUrlQuery = `
+  UPDATE MovieProfileImg
+  SET keyFileName = ?, movieImgUrlForLetter = ?
+  WHERE keyFileName = ?;
+  `;
+  const updateResultRow = await connection.query(updateProfileUrlQuery, [Key, url, prePosterName]);
+  //console.log(updateResultRow)
+  //return selectMypageInfoRow[0][0].profileImgUrl;
+}
+
 async function selectSettingsParmes(connection, userIdx) {
   const selectSettingsQuery = `
   SELECT id, alarm
@@ -302,6 +314,14 @@ async function updateAlarm(connection, userIdx, alarm){
     `;
     const updateResultRow = await connection.query(updateAlarmQuery, [alarm, userIdx])
     return updateResultRow
+}
+
+async function insertPosterUrl(connection, key, url){
+    const insertQuery = `
+    INSERT INTO FromTo.MovieProfileImg (keyFileName, movieImgUrlForLetter)
+    VALUES (?,?)
+    `;
+    const insertResultRow = await connection.query(insertQuery, [key, url])
 }
 
 async function updateNickname(connection, userIdx, newNickname){
@@ -654,5 +674,6 @@ module.exports = {
   selectLetterListByPosterIdxForLetterBox,
   selectchatLetterByposterIdx,
   selectOriginKeyFilename,
-  
+  insertPosterUrl,
+  updatePosterUrl,
 };
