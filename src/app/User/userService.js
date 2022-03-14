@@ -201,13 +201,13 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
 
         const params1 = {
             Bucket: bucket_name,
-            Key: key, // file name that you want to save in s3 bucket
+            Key: userIdx+"userfile"+ key, // file name that you want to save in s3 bucket
             Body: body
         }
 
         const params2 = {
             Bucket: bucket_name,
-            Key: key, // file name that you want to save in s3 bucket
+            Key: userIdx+"userfile"+ key, // file name that you want to save in s3 bucket
         }
     
         if (selectUserIdxforUpdate.length < 1){
@@ -220,10 +220,11 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             })
             //이미지 url 추출
             const url = s3.getSignedUrl('getObject', params2);
-            const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, key, url);
+            const insertNewProfileImgUrl = await userDao.insertNewprofileImgUrl(connection, userIdx, params2.Key, url);
             return response(baseResponse.SUCCESS, {'imageUrl' : url});
         }else {
             const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
+            console.log(selectKeyFilename)
             const ParamsForDelete = {
                 Bucket: bucket_name,
                 Key: selectKeyFilename
@@ -256,7 +257,7 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
                         const url = s3.getSignedUrl('getObject', params2);
                         console.log(userIdx, key, url)    
                         const connection = await pool.getConnection(async (conn) => conn);                 
-                        const updateNewProfileImgUrl = await userDao.updateprofileImgUrl(connection, url, key, userIdx);
+                        const updateNewProfileImgUrl = await userDao.updateprofileImgUrl(connection, url, params2.Key, userIdx);
                         return response(baseResponse.SUCCESS, {'imageUrl' : url});
                     }).catch(function(err) {
                         console.log('마지막에 catch붙이는게 깔끔', err);
@@ -277,56 +278,6 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
         return errResponse(baseResponse.DB_ERROR);
     }
 }
-
-// function deleteAndupload(){
-//     return new Promise(function(resolve, reject){
-//         s3.deleteObject(ParamsForDelete, function(err, data){
-//             if (err) {
-//                 res.status(500).json({error:"Error ->" + err})
-//             }else {
-//                 console.log("S3에 기존 이미지가 있어서 삭제했습니다.")
-//             }})
-//     }).then(function(result){
-//         s3.upload(params1, (err, data) => {
-//             if (err) {
-//                 res.status(500).json({error:"Error -> " + err});
-//             }
-//             console.log({message: 'upload success! -> filename = ' + req.file.originalname})
-//         })
-//     }).catch(function(err) {
-//         console.log('마지막에 catch붙이는게 깔끔', err);
-//     });
-// }
-// deleteAndupload()
-
-
-// function test1(){
-//     return new Promise(function(resolve, reject){
-//         resolve(3)
-//     }).then(function(result){
-//         const ta = result + 1
-//         console.log(ta)
-//     }).catch(function(err) {
-//         console.log('마지막에 catch붙이는게 깔끔', err);
-//     });
-// }
-// test1()
-
-            // //기존 이미지 삭제
-            // s3.deleteObject(ParamsForDelete, function(err, data){
-            //     if (err) {
-            //         res.status(500).json({error:"Error ->" + err})
-            //     }else {
-            //         console.log("S3에 기존 이미지가 있어서 삭제했습니다.")
-            //     }})
-            // //이미지 새로 업로드
-            // s3.upload(params1, (err, data) => {
-            //     if (err) {
-            //         res.status(500).json({error:"Error -> " + err});
-            //     }
-            //     console.log({message: 'upload success! -> filename = ' + req.file.originalname})
-            // })
-
 
 
 exports.editAlarmActive = async function (userIdx, alarm){
@@ -393,6 +344,37 @@ exports.editNickname = async function (userIdx, newNickname){
 
     }catch (err) {
         logger.error(`App - editNickname Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+exports.createPosterUrl = async function (userIdx, alarm){
+
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        const s3 = new AWS.S3({
+            accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
+            secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
+            region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
+        });
+
+        const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
+
+        const params1 = {
+            Bucket: bucket_name,
+            Key: key, // file name that you want to save in s3 bucket
+            Body: body
+        }
+
+        const params2 = {
+            Bucket: bucket_name,
+            Key: key, // file name that you want to save in s3 bucket
+        }
+    
+
+    }catch (err) {
+        logger.error(`App - editAlarmActive Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }

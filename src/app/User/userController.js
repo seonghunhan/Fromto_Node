@@ -54,9 +54,10 @@ var upload = multer({storage: storage});
 /**
  * API No. 0
  * API Name : 테스트 API
- * [GET] /app/test
+ * [GET] /app/s3test
  */
  exports.s3getTest = async function (req, res) {
+    const connection = await pool.getConnection(async (conn) => conn);
 
     // 이미지 url 불러오기
     const s3 = new AWS.S3({
@@ -65,16 +66,26 @@ var upload = multer({storage: storage});
         region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
     });
 
-    const bucket_name = "fromto-posterimage/poster"; //생성한 버킷 이름
+    const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, 13);
+
+    const bucket_name = "fromto-posterimage/profile"; //생성한 버킷 이름
 
     const params = {
         Bucket : bucket_name,
-        Key : '333.jpg'
+        Key : selectKeyFilename
     };
 
-    const url = s3.getSignedUrl('getObject', params);
-    console.log(url)
+    console.log(params.Key)
 
+
+    // s3.deleteObject(params, function(err, data){
+    //     if (err) {
+    //         res.status(500).json({error:"Error ->" + err})
+    //     }else {
+    //         console.log("S3에 기존 이미지가 있어서 삭제했습니다.")
+    //     }})
+
+    connection.release();
 
     //--------------------------------------------------------------------------------------
 
@@ -654,6 +665,28 @@ exports.settings = async function (req, res) {
     const selectResult = await userProvider.retrieveUserNickname(userIdx)
 
     return res.send(response(baseResponse.SUCCESS, {'nickname': selectResult}));
+
+}
+
+/**
+ * API No. 17.5
+ * API Name : 포스터 선택 API
+ * [POST]] /app/login/writingLetter/savePoster
+ */
+
+
+ exports.postPosterFile = async function (req, res) {
+
+    const userIdxResult = req.verifiedToken.userIdx;
+
+    const bucket_name = "fromto-posterimage/poster"; //생성한 버킷 이름
+    const key = req.file.originalname; //userIdx로 프론트한테 받을것 // file name that you want to save in s3 bucket
+    const body = req.file.buffer;
+    
+
+    const changeprofileUrl = await userService.createPosterUrl(userIdxResult, bucket_name, key, body )
+
+    //res.send(changeprofileUrl)
 
 }
 

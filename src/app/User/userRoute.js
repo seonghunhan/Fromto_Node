@@ -10,7 +10,7 @@ module.exports = function(app){
     app.get('/app/test', user.getTest)
 
     // 0. s3 테스트 API
-    //app.post('/app/s3test', upload.single("img"), user.segetTest)
+    app.post('/app/s3test', upload.single("img"), user.s3getTest)
 
     // 1. 유저 생성 (회원가입) API
     app.post('/app/newusers', user.postUsers);
@@ -68,6 +68,9 @@ module.exports = function(app){
 
     // 17. 편지 작성 API (닉네임제공)
     app.get('/app/login/writingLetter', jwtMiddleware, user.getUserNickname);
+
+    // 17.5 포스터 선택 API (앨범에서 포스터 고를 때)
+    app.post('/app/login/writingLetter/savePoster', jwtMiddleware, upload.single("img"), user.postPosterFile);
 
     // 18. 편지 보내기 API (DB저장)
     app.post('/app/login/sendingLetter', jwtMiddleware, user.postWritedLetter);
