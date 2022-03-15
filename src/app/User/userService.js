@@ -186,7 +186,13 @@ exports.insertAuthCode = async function (code, email) {
 
 exports.insertPasswordAuthCode = async function(ranNum, id) {
     const connection = await pool.getConnection(async (conn) => conn);
-    const updatePasswordCode = await userDao.updatePasswordAuthcode(connection, ranNum, id);
+    const selectPasswordAuthCodeForDuplicationCheck = await userDao.passwordAuthcodeCheckForDup(connection, id); 
+    
+    if (selectPasswordAuthCodeForDuplicationCheck.length < 1) {
+        const insertPasswordCode = await userDao.insertPasswordAuthcode(connection, ranNum, id);
+    }else {
+        const updatePasswordCode = await userDao.updatePasswordAuthCode(connection, ranNum, id);
+    }
     connection.release();
 }
 

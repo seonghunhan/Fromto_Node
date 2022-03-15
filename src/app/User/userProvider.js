@@ -123,6 +123,7 @@ exports.passwordAuthcodeCheck = async function (email) {
   const selectCode = await userDao.passwordAuthcodeCheck(connection,email);
   connection.release();
   const realcode = selectCode[0][0].passwordcode;
+  console.log(realcode)
   return realcode;
 }
 

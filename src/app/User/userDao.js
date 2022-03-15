@@ -184,16 +184,36 @@ async function selectUserInfoforPassword(connection, birth, gender, id) {
   return selectUserRow[0][0]
 }
 
-async function updatePasswordAuthcode(connection, ranNum, id){
+async function insertPasswordAuthcode(connection, ranNum, id){
   const list = [ranNum, id]
-  const updatePasswordCode = `
+  const insertPasswordCode = `
   INSERT INTO authCode (passwordcode, id)
   VALUES (?,?);
   `;
-  const updateCodeRow = await connection.query(updatePasswordCode, list);
+  const insertCodeRow = await connection.query(insertPasswordCode, list);
 
-  return(updateCodeRow)
+  return(insertCodeRow)
  
+}
+
+async function passwordAuthcodeCheckForDup(connection,email){
+  const selectCodeQuery = `
+  SELECT  passwordcode
+  FROM authCode 
+  WHERE id = ?;`;
+  const selectCodeRow = await connection.query(selectCodeQuery,email);
+
+  return selectCodeRow[0];
+}
+
+async function updatePasswordAuthCode(connection, code, email){
+  const updateCodeQuery = `
+  UPDATE authCode
+  SET passwordcode = ?
+  WHERE id = ?
+  `
+  const updateQueryRow = await connection.query(updateCodeQuery, [code, email])
+  return updateQueryRow
 }
 
 async function passwordAuthcodeCheck(connection,email){
@@ -665,7 +685,7 @@ module.exports = {
   selectAuthCode,
   selectUserInfoforPassword,
   deleteAuthCode,
-  updatePasswordAuthcode,
+  insertPasswordAuthcode,
   passwordAuthcodeCheck,
   deletePasswordAuthCode,
   updatePassword,
@@ -707,4 +727,6 @@ module.exports = {
   insertPosterUrl,
   updatePosterUrl,
   selectAuthCodeForDuplicateCheck,
+  passwordAuthcodeCheckForDup,
+  updatePasswordAuthCode,
 };
