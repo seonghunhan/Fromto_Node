@@ -413,7 +413,7 @@ exports.createEditingPosterUrl = async function (userIdx, bucket_name, key, body
         // const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
         const ParamsForDelete = {
             Bucket: bucket_name,
-            Key: prePosterName
+            Key: userIdx + "user" + prePosterName
         }
         // deleteObject와 upload함수가 비동기식으로 실행되기 때문에 promise,then을 사용하여 순차적으로 실행
         function deleteAndupload(){
