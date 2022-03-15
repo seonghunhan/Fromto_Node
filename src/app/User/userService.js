@@ -410,11 +410,14 @@ exports.createEditingPosterUrl = async function (userIdx, bucket_name, key, body
             Key: userIdx + "user" + key, // file name that you want to save in s3 bucket
         }
 
-        // const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
+        //const selectPosterFileName = await userDao.selectPosterOriginKeyFilename(connection, userIdx);
+
         const ParamsForDelete = {
             Bucket: bucket_name,
             Key: userIdx + "user" + prePosterName
         }
+
+        console.log("여기다 : " + ParamsForDelete.Key)
         // deleteObject와 upload함수가 비동기식으로 실행되기 때문에 promise,then을 사용하여 순차적으로 실행
         function deleteAndupload(){
             return new Promise(function(resolve, reject){
@@ -443,7 +446,7 @@ exports.createEditingPosterUrl = async function (userIdx, bucket_name, key, body
                     const url = s3.getSignedUrl('getObject', params2);
                     console.log(userIdx, key, url)    
                     const connection = await pool.getConnection(async (conn) => conn);                 
-                    const updateNewProfileImgUrl = await userDao.updatePosterUrl(connection, params2.Key, url, prePosterName);
+                    const updateNewProfileImgUrl = await userDao.updatePosterUrl(connection, params2.Key, url, ParamsForDelete.Key);
                     return response(baseResponse.SUCCESS, {'imageUrl' : url});
                 }).catch(function(err) {
                     console.log('마지막에 catch붙이는게 깔끔', err);

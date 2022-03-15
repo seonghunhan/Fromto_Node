@@ -264,6 +264,16 @@ async function insertNewprofileImgUrl(connection, userIdx, key, ImgUrl) {
 
 async function selectOriginKeyFilename(connection, userIdx){
   const selectQuery = `
+  SELECT keyFileName
+  FROM FromTo.MovieProfileImg
+  WHERE userIdx = '?';
+  `;
+  const selectResultRow = await connection.query(selectQuery, userIdx)
+  return selectResultRow[0][0].keyFilename
+}
+
+async function selectPosterOriginKeyFilename(connection, userIdx){
+  const selectQuery = `
   SELECT keyFilename
   FROM MyPage
   WHERE userIdx = '?';
