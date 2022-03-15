@@ -166,6 +166,24 @@ exports.generateRandom = async function (min, max) {
 
 }
 
+exports.insertAuthCode = async function (code, email) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const selectcode = await userDao.selectAuthCodeForDuplicateCheck(connection, email);
+    
+    console.log("셀렉코드 : " + selectcode)  
+    if (selectcode.length < 1){
+      console.log("여기실행1")
+      const insertCodeResult = await userDao.insertAuthCode(connection, code, email);
+      return insertCodeResult
+    } else {
+      console.log("여기실행2")  
+      const updateCodeResult = await userDao.updateAuthCode(connection, code, email);
+    }  
+    connection.release();
+  
+    //return insertCodeResult;
+  }
+
 exports.editPassword = async function (email, password) {
 
     try{
@@ -378,7 +396,7 @@ exports.createPosterUrl = async function (userIdx, bucket_name, key, body){
         })
         //이미지 url 추출
         const url = s3.getSignedUrl('getObject', params2);
-        const insertNewPosterUrl = await userDao.insertPosterUrl(connection, params2.Key, url);
+        //const insertNewPosterUrl = await userDao.insertPosterUrl(connection, params2.Key, url);
         return response(baseResponse.SUCCESS, {'imageUrl' : url});
     
 
@@ -446,7 +464,7 @@ exports.createEditingPosterUrl = async function (userIdx, bucket_name, key, body
                     const url = s3.getSignedUrl('getObject', params2);
                     console.log(userIdx, key, url)    
                     const connection = await pool.getConnection(async (conn) => conn);                 
-                    const updateNewProfileImgUrl = await userDao.updatePosterUrl(connection, params2.Key, url, ParamsForDelete.Key);
+                    //const updateNewProfileImgUrl = await userDao.updatePosterUrl(connection, params2.Key, url, ParamsForDelete.Key);
                     return response(baseResponse.SUCCESS, {'imageUrl' : url});
                 }).catch(function(err) {
                     console.log('마지막에 catch붙이는게 깔끔', err);

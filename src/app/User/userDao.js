@@ -124,13 +124,32 @@ async function selectUserAccount(connection, id) {
   return selectUserAccountRow[0];
 }
 
-async function updateAuthCode(connection, code, email){
+async function insertAuthCode(connection, code, email){
   const list = [code, email]
-  const updateCodeQuery =  `
+  const insertCodeQuery =  `
   INSERT INTO authCode (emailcode, id)
   VALUES (?, ?);`;
-  const updateCodeRow = await connection.query(updateCodeQuery, list);
-  return updateCodeRow;
+  const insertCodeRow = await connection.query(insertCodeQuery, list);
+  return insertCodeRow;
+}
+
+async function updateAuthCode(connection, code, email){
+  const updateCodeQuery = `
+  UPDATE authCode
+  SET emailcode = ?
+  WHERE id = ?
+  `
+  const updateQueryRow = await connection.query(updateCodeQuery, [code, email])
+  return updateQueryRow
+}
+
+async function selectAuthCodeForDuplicateCheck(connection,email){
+  const selectCodeQuery = `
+  SELECT  emailcode
+  FROM authCode 
+  WHERE id = ?;`;
+  const selectCodeRow = await connection.query(selectCodeQuery,email);
+  return selectCodeRow[0];
 }
 
 async function selectAuthCode(connection,email){
@@ -641,6 +660,7 @@ module.exports = {
   insertUserInfo,
   selectUserPassword,
   selectUserAccount,
+  insertAuthCode,
   updateAuthCode,
   selectAuthCode,
   selectUserInfoforPassword,
@@ -686,4 +706,5 @@ module.exports = {
   selectOriginKeyFilename,
   insertPosterUrl,
   updatePosterUrl,
+  selectAuthCodeForDuplicateCheck,
 };

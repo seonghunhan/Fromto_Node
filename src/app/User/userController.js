@@ -336,7 +336,7 @@ exports.authemail = async function (req, res) {
         text: '오른쪽 인증번호를 입력해 주세요 : ' + ranNum
     };
 
-    const authcodeResult = await userProvider.authcodeUpdate(ranNum, email)
+    const authcodeResult = await userService.insertAuthCode(ranNum, email)
     
     //checkCode(req, res, ranNum)
 
@@ -349,6 +349,10 @@ exports.authemail = async function (req, res) {
             return res.send(response(baseResponse.SUCCESS));
         }
     });
+
+    // if (authcodeResult) {
+    //     return res.send(response(baseResponse.SUCCESS));
+    // }
 
 }
 
@@ -369,9 +373,6 @@ exports.checkCode = async function (req, res) {
         //import {gogo} from "../../../config/email"
 
         //console.log(gogo)
-
- 
-
 
         if (!checkcode){
             return res.send(response(baseResponse.SIGNUP_AUTHCODE_EMPTY));
