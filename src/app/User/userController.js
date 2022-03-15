@@ -425,7 +425,7 @@ exports.changePasswordAuthcode = async function (req, res) {
                 text: '임시비밀번호 : ' + ranNum
             };
             
-            const authcodeResult = await userProvider.passwordAuthcodeUpdate(ranNum, id)
+            const authcodeResult = await userService.insertPasswordAuthCode(ranNum, id)
 
             //메일 전송
             const result = await smtpTransport.sendMail(mailOption, function(error){

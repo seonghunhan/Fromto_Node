@@ -184,6 +184,12 @@ exports.insertAuthCode = async function (code, email) {
     //return insertCodeResult;
   }
 
+exports.insertPasswordAuthCode = async function(ranNum, id) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const updatePasswordCode = await userDao.updatePasswordAuthcode(connection, ranNum, id);
+    connection.release();
+}
+
 exports.editPassword = async function (email, password) {
 
     try{

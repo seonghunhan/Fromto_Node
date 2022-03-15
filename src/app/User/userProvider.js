@@ -118,12 +118,6 @@ exports.usercheckForChangePassword = async function(birth, gender, id) {
   return UserInfo;
 }
 
-exports.passwordAuthcodeUpdate = async function(ranNum, id) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const updatePasswordCode = await userDao.updatePasswordAuthcode(connection, ranNum, id);
-  connection.release();
-}
-
 exports.passwordAuthcodeCheck = async function (email) {
   const connection = await pool.getConnection(async (conn) => conn);
   const selectCode = await userDao.passwordAuthcodeCheck(connection,email);
