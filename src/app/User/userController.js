@@ -89,34 +89,34 @@ var upload = multer({storage: storage});
 
     //--------------------------------------------------------------------------------------
 
-    // // 이미지파일 업로드
-    // const s3 = new AWS.S3({
-    //     accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
-    //     secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
-    //     region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
-    // });
+    // 이미지파일 업로드
+    const s3 = new AWS.S3({
+        accessKeyId: secret_config.s3AccessKey , // 사용자의 AccessKey
+        secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
+        region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
+    });
 
-    // const bucket_name = "fromto-posterimage/profile"; //생성한 버킷 이름
-    // const key = req.file.originalname;
-    // const body = req.file.buffer;
+    const bucket_name = "fromto-posterimage/profile"; //생성한 버킷 이름
+    const key = req.file.originalname;
+    const body = req.file.buffer;
     
-    // const params = {
-    //     Bucket: bucket_name,
-    //     Key: key, // file name that you want to save in s3 bucket
-    //     Body: body
-    // }
+    const params = {
+        Bucket: bucket_name,
+        Key: key, // file name that you want to save in s3 bucket
+        Body: body
+    }
 
-    // console.log('파일 이름 : ' + key);
+    console.log('파일 이름 : ' + key);
 
-    // s3.upload(params, (err, data) => {
-    //     if (err) {
-    //         res.status(500).json({error:"Error -> " + err});
-    //     }
-    //     console.log('파일 이름 : ' + req.file.originalname);
+    s3.upload(params, (err, data) => {
+        if (err) {
+            res.status(500).json({error:"Error -> " + err});
+        }
+        console.log('파일 이름 : ' + req.file.originalname);
         
-    //     return res.send({message: 'upload success! -> filename = ' + req.file.originalname})
+        return res.send({message: 'upload success! -> filename = ' + req.file.originalname})
 
-    // })
+    })
 
 
 
