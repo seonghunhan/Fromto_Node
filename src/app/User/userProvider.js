@@ -104,12 +104,12 @@ exports.authcodeCheck = async function (email) {
   return realcode;
 }
 
-exports.codeCheckForDelete = async function (email) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const deleteCode = await userDao.deleteAuthCode(connection,email);
-  connection.release();
-  return deleteCode
-}
+// exports.codeCheckForDelete = async function (email) {
+//   const connection = await pool.getConnection(async (conn) => conn);
+//   const deleteCode = await userDao.deleteAuthCode(connection,email);
+//   connection.release();
+//   return deleteCode
+// }
 
 exports.usercheckForChangePassword = async function(birth, gender, id) {
   const connection = await pool.getConnection(async (conn) => conn);
