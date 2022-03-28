@@ -226,8 +226,9 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             secretAccessKey: secret_config.s3SevretAccessKey ,// 사용자의 secretAccessKey
             region: secret_config.s3region,  // 사용자 사용 지역 (서울의 경우 ap-northeast-2)
         });
-
+        //console.log(userIdx)
         const selectUserIdxforUpdate = await userDao.selectUserIdx(connection, userIdx);
+        
 
         const params1 = {
             Bucket: bucket_name,
@@ -254,7 +255,6 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             return response(baseResponse.SUCCESS, {'imageUrl' : url});
         }else {
             const selectKeyFilename = await userDao.selectOriginKeyFilename(connection, userIdx);
-            console.log(selectKeyFilename)
             const ParamsForDelete = {
                 Bucket: bucket_name,
                 Key: selectKeyFilename
@@ -262,8 +262,10 @@ exports.editProfileImgUrl = async function (userIdx, bucket_name, key, body){
             // deleteObject와 upload함수가 비동기식으로 실행되기 때문에 promise,then을 사용하여 순차적으로 실행
             function deleteAndupload(){
                 return new Promise(function(resolve, reject){
+                    console.log("여기냐!!")
                     s3.deleteObject(ParamsForDelete, function(err, data){
                         if (err) {
+                            console.log("여기냐!!222")
                             res.status(500).json({error:"Error ->" + err})
                         }else {
                             console.log("S3에 기존 이미지가 있어서 삭제했습니다.")

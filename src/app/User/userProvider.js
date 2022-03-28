@@ -104,12 +104,12 @@ exports.authcodeCheck = async function (email) {
   return realcode;
 }
 
-// exports.codeCheckForDelete = async function (email) {
-//   const connection = await pool.getConnection(async (conn) => conn);
-//   const deleteCode = await userDao.deleteAuthCode(connection,email);
-//   connection.release();
-//   return deleteCode
-// }
+exports.codeCheckForDelete = async function (email) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const deleteCode = await userDao.deleteAuthCode(connection,email);
+  connection.release();
+  return deleteCode
+}
 
 exports.usercheckForChangePassword = async function(birth, gender, id) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -137,10 +137,20 @@ exports.passwordcodeCheckForDelete = async function (email) {
 exports.retrieveMypage = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
   const selectNickname = await userDao.selectUserMypage1(connection,userIdx);
+
+  
   const selectImgUrl = await userDao.selectUserMypage2(connection,userIdx);
+
+  if (selectImgUrl.length < 1) {
+    return response(baseResponse.SUCCESS, {'nickname': selectNickname, 'profileImgUrl': "No Img"});
+  } else {
+      //selectImgUrl[0].profileImgUrl
+      return response(baseResponse.SUCCESS, {'nickname': selectNickname, 'profileImgUrl': selectImgUrl[0].profileImgUrl});
+  }
   connection.release();
-  const resultRow = [selectNickname, selectImgUrl]
-  return resultRow
+
+  //return response(baseResponse.SUCCESS, {'userId': userInfoRows[0].id, 'useridx': userInfoRows[0].idx});
+  //selectMypageInfoRow[0].profileImgUrl
 }
 
 exports.retrievePosterurlForMypage = async function (userIdx) {

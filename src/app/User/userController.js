@@ -509,7 +509,7 @@ exports.getMypageInfo = async function (req, res) {
     const userNickname = await userProvider.retrieveMypage(userIdxResult)
 
     //console.log(userNickname[0])
-    return res.send(response(baseResponse.SUCCESS, {'nickname': userNickname[0], 'profileImgUrl': userNickname[1]}));
+    return res.send(userNickname);
 
 }
 

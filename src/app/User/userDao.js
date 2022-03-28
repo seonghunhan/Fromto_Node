@@ -247,14 +247,20 @@ async function updatePassword(connection, email, password) {
 
 async function selectUserMypage1(connection, userIdx) {
   const selectMypageInfoQuery = `
-  SELECT UserInfo.nickname
-  FROM UserInfo INNER JOIN MyPage ON UserInfo.idx = MyPage.userIdx
-  WHERE UserInfo.idx = ?;
+  SELECT nickname
+  FROM UserInfo
+  WHERE idx = ?;
   `;
   const selectMypageInfoRow = await connection.query(selectMypageInfoQuery, userIdx);
-  //console.log(selectMypageInfoRow[0][0].nickname)
+
   return selectMypageInfoRow[0][0].nickname;
 }
+
+// `
+//   SELECT UserInfo.nickname
+//   FROM UserInfo INNER JOIN MyPage ON UserInfo.idx = MyPage.userIdx
+//   WHERE UserInfo.idx = ?;
+  
 
 async function selectUserMypage2(connection, userIdx) {
   const selectMypageInfoQuery = `
@@ -262,9 +268,9 @@ async function selectUserMypage2(connection, userIdx) {
   FROM MyPage
   WHERE userIdx = ?;
   `;
-  const selectMypageInfoRow = await connection.query(selectMypageInfoQuery, userIdx);
-  //console.log(selectMypageInfoRow[0][0].profileImgUrl)
-  return selectMypageInfoRow[0][0].profileImgUrl;
+  const [selectMypageInfoRow] = await connection.query(selectMypageInfoQuery, userIdx);
+  return selectMypageInfoRow
+  //return selectMypageInfoRow[0][0].profileImgUrl;
 }
 
 async function selectUserMypage3(connection, userIdx) {
