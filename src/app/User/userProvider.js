@@ -157,13 +157,18 @@ exports.retrievePosterurlForMypage = async function (userIdx) {
   const connection = await pool.getConnection(async (conn) => conn);
   const selectPosterurlResult = await userDao.selectUserMypage3(connection,userIdx);
   connection.release();
-
+  console.log(selectPosterurlResult)
   const resultList = new Array();
-  for (var i = 0; i < 3; i++){
-    resultList.push(selectPosterurlResult[i].movieImgUrlForLetter)
+
+  if (selectPosterurlResult.length > 0) {
+    for (var i = 0; i < 3; i++){
+      resultList.push(selectPosterurlResult[i].movieImgUrlForLetter)
+    }
+    return resultList
+  } else {
+    return resultList
+
   }
-  
-  return resultList
 }
 
 exports.retrieveSettings = async function (userIdx) {
