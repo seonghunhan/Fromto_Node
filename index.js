@@ -19,8 +19,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(morgan('dev'));
 
-app.listen(port);
+// 무중단 배포관련 타임아웃 서비스 중단 문제 해결
+app.use(function(req, res, next) {
+    if (isDisableKeepAlive) {
+      res.set('Connection', 'close')
+    }
+    next()
+  })
+
+
+app.listen(port, function () {
+process.send('ready') //무중단 배포
 logger.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
+})
+
+// 무중단 배포
+process.on('SIGINT', function () {
+    isDisableKeepAlive = true
+    app.close(function () {
+    console.log('server closed')
+    process.exit(0)
+    })
+  })
 
 // 정적파일제공
 app.use(static(path.join(__dirname,'../')))
