@@ -1,4 +1,10 @@
+### 영화와 관련된 정보를 한곳에 'Fromto' 앱 개발  
 
+![image](https://user-images.githubusercontent.com/88662101/230560579-408cb4c4-a478-4b24-8608-d7d0ee49dc97.png)  
+
+
+<br>
+<br>
 
 ### Folder Structure
 - `src`: 메인 로직 
