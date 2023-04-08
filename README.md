@@ -1,4 +1,4 @@
-### 영화와 관련된 정보를 한곳에 'Fromto' 앱 개발  
+# 영화와 관련된 정보를 한곳에 'Fromto' 앱 개발  
 
 ![image](https://user-images.githubusercontent.com/88662101/230560579-408cb4c4-a478-4b24-8608-d7d0ee49dc97.png)  
 
@@ -6,7 +6,7 @@
 <br>
 <br>
 
-### Folder Structure
+# Folder Structure
 - `src`: 메인 로직 
 - `config` 및 `util` 폴더: 메인 로직은 아니지만 `src` 에서 필요한 부차적인 파일들을 모아놓은 폴더
 - 도메인 폴더 구조
@@ -17,7 +17,7 @@
 - Provider/Service: 비즈니스 로직 처리, 의미적 Validation
 - DAO: Data Access Object의 줄임말. Query가 작성되어 있는 곳. 
  
-#### Node.js (패키지매니저 = npm)
+### Node.js (패키지매니저 = npm)
 > Request(시작) / Response(끝)  ⇄ Router (*Route.js) ⇄ Controller (*Controller.js) ⇄ Service (CUD) / Provider (R) ⇄ DAO (DB)
 
 
@@ -49,7 +49,7 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 
 
 
-### DB 설계  
+# DB 설계  
 
 ![image](https://user-images.githubusercontent.com/88662101/230700097-e1faf90f-4296-4965-818e-dfba3e5ef888.png)
 
@@ -59,7 +59,7 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 <br>
 <br>
 
-### API Sheet  
+# API Sheet  
 
 ![image](https://user-images.githubusercontent.com/88662101/230700067-8b42870d-e192-4e09-9089-4d9fd114c167.png)
 
@@ -67,7 +67,7 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 <br>
 <br>
 
-### 구글 플레이스토어 런칭  
+# 구글 플레이스토어 런칭  
 
 ![image](https://user-images.githubusercontent.com/88662101/230700035-a08a2a9b-e093-4959-befe-ac44b1dce6e1.png)
 
