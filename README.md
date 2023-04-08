@@ -51,7 +51,8 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 
 ### DB 설계  
 
-![image](https://user-images.githubusercontent.com/88662101/230699966-4d9024cc-d7a1-4b9e-9429-05c92a7304fe.png)
+![image](https://user-images.githubusercontent.com/88662101/230700097-e1faf90f-4296-4965-818e-dfba3e5ef888.png)
+
 
 
 <br>
@@ -60,7 +61,7 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 
 ### API Sheet  
 
-![image](https://user-images.githubusercontent.com/88662101/230700003-e5b55449-73d8-4e83-a337-a061449cf474.png)
+![image](https://user-images.githubusercontent.com/88662101/230700067-8b42870d-e192-4e09-9089-4d9fd114c167.png)
 
 <br>
 <br>
@@ -68,5 +69,6 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 
 ### 구글 플레이스토어 런칭  
 
-![image](https://user-images.githubusercontent.com/88662101/230699988-3799c139-a15a-4177-a2cf-1bb47aaa690a.png)
+![image](https://user-images.githubusercontent.com/88662101/230700035-a08a2a9b-e093-4959-befe-ac44b1dce6e1.png)
+
 
