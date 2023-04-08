@@ -8,7 +8,7 @@
 
 # 프로젝트  
 - UMC IT 연합동아리 앱 개발 경진대회 참가  
-- 20개팀중에 7개팀만이 플레이스토어 런칭 성공  
+- 20개 팀 중에 7개 팀만이 플레이스토어 런칭 성공   
 - 사용 언어 / 프레임워크 : JavaScript / Node.js Express  
 - 개발 tool : Visual Studio Code, DataGrip, Postman, GitHub  
 
