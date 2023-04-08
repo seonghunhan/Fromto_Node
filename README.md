@@ -6,6 +6,24 @@
 <br>
 <br>
 
+# 프로젝트  
+- UMC IT 연합동아리 앱 개발 경진대회 참가  
+- 20개팀중에 7개팀만이 플레이스토어 런칭 성공  
+- 사용 언어 / 프레임워크 : JavaScript / Node.js Express  
+- 개발 tool : Visual Studio Code, DataGrip, Postman, GitHub  
+
+<br>
+<br>
+
+# 협업방식
+- 기능명세서 기반에 Wire-Frame을 디자이너가 노션에 공유  
+- 프론트엔드 개발자와 Notion으로 API Sheet를 공유  
+- 백엔드 개발자와 기능 단위로 Git을 통해 협업  
+
+
+<br>
+<br>
+
 # Folder Structure
 - `src`: 메인 로직 
 - `config` 및 `util` 폴더: 메인 로직은 아니지만 `src` 에서 필요한 부차적인 파일들을 모아놓은 폴더
@@ -72,3 +90,17 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 ![image](https://user-images.githubusercontent.com/88662101/230700035-a08a2a9b-e093-4959-befe-ac44b1dce6e1.png)
 
 
+<br>
+<br>
+<br>
+
+# 느낀점  
+- 플레이스토어에 런칭하기 위해 요구조건을 충족하는 데 번거로웠지만 좋은 경험이었다.  
+- 한가지 목표를 향해 팀원들과 협업을 할 수 있었던 좋은 경험이었다.  
+- 동아리내에서 시연회를 통해 다수 고객DB를 확보하였는데 이에 서버개발자로서 책임감을 느낄 수 있었다.  
+
+<br>
+<br>
+
+# 아쉬운점
+- 개발역량을 떠나서 좋은 아이디어가 있었다면 퀄리티 높은 앱을 개발할 수 있었을 것 같다.  
