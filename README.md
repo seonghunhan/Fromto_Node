@@ -47,3 +47,26 @@ Create(생성), Read(읽기), Update(갱신), Delete(삭제)
 └── README.md
 ```
 
+
+
+### DB 설계  
+
+![image](https://user-images.githubusercontent.com/88662101/230699966-4d9024cc-d7a1-4b9e-9429-05c92a7304fe.png)
+
+
+<br>
+<br>
+<br>
+
+### API Sheet  
+
+![image](https://user-images.githubusercontent.com/88662101/230700003-e5b55449-73d8-4e83-a337-a061449cf474.png)
+
+<br>
+<br>
+<br>
+
+### 구글 플레이스토어 런칭  
+
+![image](https://user-images.githubusercontent.com/88662101/230699988-3799c139-a15a-4177-a2cf-1bb47aaa690a.png)
+
